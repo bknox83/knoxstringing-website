@@ -11,22 +11,23 @@ Static website for **Knox Racquet Stringing** — professional tennis and racque
   - **images/** — Logos, hero/process backgrounds, content images (SVG, WebP, PNG).
 - **sitemap.xml** — Sitemap for search engines.
 - **robots.txt** — Crawler rules and sitemap URL.
+- **compose.yaml** — Docker Compose: Nginx serves the site; Cloudflare Tunnel (cloudflared) exposes it.
+- **nginx.conf** — Nginx config (gzip, cache rules for HTML vs assets, `index.html` fallback).
 
 Contact form submissions are handled by [Formspree](https://formspree.io); no backend in this repo.
 
-## Run locally
+## Deploy (Docker)
 
-Open `index.html` in a browser, or serve the folder with any static server, e.g.:
+The site is run with Docker Compose:
+
+- **website** — Nginx serves the static files from `./html` (copy or mount this repo’s files there, or point the volume at the repo root and set `root` in `nginx.conf` to match).
+- **tunnel** — Cloudflare Tunnel (`cloudflared`) exposes the service; set `TUNNEL_TOKEN` in the environment (e.g. in a `.env` file that is not committed).
+
+From the directory that contains `compose.yaml` and has the site in `./html`:
 
 ```bash
-# Python
-python -m http.server 8000
-
-# Node (npx)
-npx serve
+docker compose up -d
 ```
-
-Then visit `http://localhost:8000` (or the port shown).
 
 ## Tech
 
