@@ -34,6 +34,9 @@ docker compose up -d
 - Plain HTML, CSS, and JavaScript (no frameworks).
 - [Google Fonts](https://fonts.google.com): Outfit, Instrument Serif.
 - Formspree for the contact form.
+- **Docker** & **Docker Compose** — run Nginx and the tunnel in containers.
+- **Nginx** — static file server (gzip, caching).
+- **cloudflared** — [Cloudflare Tunnel](https://developers.cloudflare.com/cloudflare-one/connections/connect-apps/) for exposing the site without opening ports.
 
 ## License
 
