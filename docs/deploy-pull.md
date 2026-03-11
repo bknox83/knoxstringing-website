@@ -17,7 +17,7 @@ If you use **GitHub-hosted** runners, they cannot reach a private IP (e.g. 192.1
    bash ~/Docker/KnoxStringing/repo/scripts/pull-deploy.sh
    ```
 
-3. **Schedule it with cron** so it runs every 5–10 minutes (or hourly):
+3. **Schedule it with cron** so it runs every hour (or every 5 min with `*/5 * * * *`):
 
    ```bash
    crontab -e
@@ -26,10 +26,10 @@ If you use **GitHub-hosted** runners, they cannot reach a private IP (e.g. 192.1
    Add a line — use `bash` and the path to the script inside the clone (adjust paths if yours differ):
 
    ```cron
-   */5 * * * * bash /home/brad/Docker/KnoxStringing/repo/scripts/pull-deploy.sh >> /home/brad/Docker/KnoxStringing/deploy.log 2>&1
+   0 * * * * bash /home/brad/Docker/KnoxStringing/repo/scripts/pull-deploy.sh >> /home/brad/Docker/KnoxStringing/deploy.log 2>&1
    ```
 
-   Now whenever you push to `main`, the server will have the new files within a few minutes.
+   Now whenever you push to `main`, the server will have the new files within an hour (or sooner if you use a more frequent schedule).
 
 ## Paths used by the script
 
