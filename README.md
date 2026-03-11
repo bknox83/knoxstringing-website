@@ -30,7 +30,9 @@ From the directory that contains `compose.yaml` and has the site in `./html`:
 docker compose up -d
 ```
 
-**Getting new code onto the server:** Run `scripts/pull-deploy.sh` on a cron schedule (e.g. hourly) so the server pulls from GitHub and rsyncs into `./html`. To run the deploy once by hand (e.g. right after a push):
+**Getting new code onto the server:** On every push to `main`, the CI workflow runs tests and then runs the deploy job on a **self-hosted runner** on the server, which executes `scripts/pull-deploy.sh`. See [CI (GitHub Actions)](#ci-github-actions).
+
+To run a deploy by hand on the server:
 
 ```bash
 bash ~/Docker/KnoxStringing/repo/scripts/pull-deploy.sh
@@ -44,6 +46,8 @@ On every push and pull request to `main`, the **CI** workflow runs:
 - **HTML validation** — [W3C Nu Validator](https://validator.github.io/validator/) (via Docker) validates `index.html`.
 - **Smoke test** — Serves the site locally and checks for HTTP 200 and expected content (“Knox Racquet Stringing”, “Get in Touch”).
 - **Accessibility** — [Pa11y](https://pa11y.org/) runs against the contact page with config in `pa11y.json`.
+
+On **push to `main` only** (after the above steps pass), a **deploy** job runs on a **self-hosted runner** on the server and executes `scripts/pull-deploy.sh` to pull the latest code and rsync into the Nginx `./html` directory. See [Deploy (Docker)](#deploy-docker).
 
 Runs on `ubuntu-latest` with Node 22; uses `actions/checkout@v5` and `actions/setup-node@v5`.
 

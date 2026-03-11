@@ -1,4 +1,5 @@
-# CI: link check (lychee), HTML validation (W3C Nu), smoke test, accessibility (pa11y)
+# CI: link check (lychee), HTML validation (W3C Nu), smoke test, accessibility (pa11y).
+# Deploy: on push to main (after CI passes), runs on self-hosted runner and executes scripts/pull-deploy.sh.
 name: CI
 
 on:
@@ -49,3 +50,12 @@ jobs:
           pa11y http://localhost:3000 --threshold 0 --config pa11y.json
 
           kill $SERVE_PID 2>/dev/null || true
+
+  deploy:
+    name: Deploy to server
+    needs: check
+    runs-on: self-hosted
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+      - name: Pull and deploy
+        run: bash ~/Docker/KnoxStringing/repo/scripts/pull-deploy.sh
