@@ -302,10 +302,6 @@ a:hover { color: #164a32; text-decoration: underline; }
   transform: translateY(-2px);
 }
 
-.service-icon {
-  font-size: 2rem;
-  margin-bottom: var(--space-sm);
-}
 .service-card h3 {
   font-size: 1.2rem;
   font-weight: 600;
@@ -664,10 +660,6 @@ a:hover { color: #164a32; text-decoration: underline; }
   color: #0f3d28;
 }
 .contact-link:hover { text-decoration: none; color: #0a291c; }
-.contact-note {
-  font-size: 0.85rem;
-  color: var(--color-text-muted);
-}
 
 /* --- Footer --- */
 .site-footer {

@@ -58,6 +58,8 @@ jobs:
         run: npm audit --audit-level=high
 
       - name: Install serve and pa11y
+        env:
+          NPM_CONFIG_LOGLEVEL: error
         run: npm install -g serve pa11y wait-on @lhci/cli@0.15.x
 
       - name: Setup Chrome
