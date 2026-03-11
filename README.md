@@ -4,10 +4,11 @@ Static website for **Knox Racquet Stringing** — professional tennis and racque
 
 ## What’s in this repo
 
-- **index.html** — Single-page site (services, why restring, gauge & tension, overgrips, grips, process, contact).
+- **index.html** — Single-page site (services, why restring, gauge & tension, overgrips, grips, process, contact). Uses minified CSS/JS; deploy runs `npm run build` on the server; for local preview run `npm run build` after editing CSS/JS.
+- **package.json** — Scripts to minify CSS and JS (`npm run build`).
 - **assets/**
-  - **css/** — `styles.css` (layout, components, responsive).
-  - **js/** — `script.js` (mobile nav, scroll reveal, year in footer).
+  - **css/** — `styles.css` (source), `styles.min.css` (built); layout, components, responsive.
+  - **js/** — `script.js` (source), `script.min.js` (built); mobile nav, scroll reveal, year in footer.
   - **images/** — Logos, hero/process backgrounds, content images (SVG, WebP, PNG).
 - **sitemap.xml** — Sitemap for search engines.
 - **robots.txt** — Crawler rules and sitemap URL.
@@ -32,7 +33,7 @@ From the directory that contains `compose.yaml` and has the site in `./html`:
 docker compose up -d
 ```
 
-**Getting new code onto the server:** On every push to `main`, the CI workflow runs tests and then runs the deploy job on a **self-hosted runner** on the server, which executes `scripts/pull-deploy.sh`. See [CI (GitHub Actions)](#ci-github-actions).
+**Getting new code onto the server:** On every push to `main`, the CI workflow runs tests and then runs the deploy job on a **self-hosted runner** on the server, which executes `scripts/pull-deploy.sh`. The script pulls from GitHub, runs `npm ci`/`npm install` and `npm run build` (so minified CSS/JS are generated), then rsyncs into the Nginx docroot. The server must have Node.js installed. See [CI (GitHub Actions)](#ci-github-actions).
 
 To run a deploy by hand on the server:
 
@@ -44,6 +45,8 @@ bash ~/Docker/KnoxStringing/repo/scripts/pull-deploy.sh
 
 On every push and pull request to `main`, the **CI** workflow runs:
 
+- **Dependencies and build** — `npm ci` (or `npm install`) and `npm run build` so the minify step is validated and the rest of CI runs against the built site.
+- **Audit** — `npm audit --audit-level=high` fails the job if there are high or critical vulnerabilities in dependencies.
 - **Link check** — [Lychee](https://github.com/lycheeverse/lychee) checks that links (excluding `tel:`, `#`, and Formspree) resolve.
 - **HTML validation** — [W3C Nu Validator](https://validator.github.io/validator/) (via Docker) validates `index.html`.
 - **JSON-LD LocalBusiness** — `scripts/validate-jsonld.js` checks that the `application/ld+json` block in `index.html` is valid and has the required LocalBusiness schema fields.

@@ -12,6 +12,11 @@ cd "$REPO_DIR"
 git fetch origin main
 git reset --hard origin/main
 
+if [ -f package.json ]; then
+  echo "Running npm install and npm run build..."
+  (npm ci 2>/dev/null || npm install) && npm run build
+fi
+
 rsync -a --delete \
   --exclude '.git' \
   --exclude '.github' \
