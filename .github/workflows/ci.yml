@@ -59,6 +59,7 @@ jobs:
       - name: Lighthouse CI
         env:
           CHROME_PATH: ${{ steps.chrome.outputs.chrome-path }}
+          CHROME_FLAGS: --no-sandbox --disable-setuid-sandbox --disable-dev-shm-usage --disable-gpu
         run: |
           npm install -g @lhci/cli@0.15.x
           lhci autorun
