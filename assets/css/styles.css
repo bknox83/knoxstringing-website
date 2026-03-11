@@ -183,6 +183,13 @@ a:hover { color: #164a32; text-decoration: underline; }
   background-repeat: no-repeat;
   z-index: 0;
 }
+.hero-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(28, 28, 26, 0.48);
+  pointer-events: none;
+}
 .hero-bg::after {
   content: "";
   position: absolute;
@@ -480,7 +487,7 @@ a:hover { color: #164a32; text-decoration: underline; }
   position: absolute;
   inset: 0;
   background-color: #c5c9be;
-  background-image: linear-gradient(180deg, rgba(28, 28, 26, 0.72) 0%, rgba(28, 28, 26, 0.6) 100%),
+  background-image: linear-gradient(180deg, rgba(28, 28, 26, 0.82) 0%, rgba(28, 28, 26, 0.72) 100%),
                     url("../images/process-bg.webp");
   background-size: cover;
   background-position: center;
