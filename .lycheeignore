@@ -1,0 +1,4 @@
+# Ignore non-HTTP links so lychee doesn't fail in CI
+mailto:.*
+tel:.*
+^#$

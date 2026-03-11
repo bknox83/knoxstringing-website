@@ -1,0 +1,50 @@
+# CI: link check (lychee), HTML validation (W3C Nu), smoke test, accessibility (pa11y)
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: HTML validation (W3C Nu)
+        run: |
+          docker run --rm -v "$PWD:/data" ghcr.io/validator/validator:latest vnu --skip-non-html /data/index.html
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install serve and pa11y
+        run: npm install -g serve pa11y wait-on
+
+      - name: Start server and run link check, smoke test, and accessibility
+        run: |
+          serve . -l 3000 &
+          SERVE_PID=$!
+          npx wait-on http://localhost:3000 --timeout 15000
+
+          # Lychee link checker
+          curl -sSfL "https://github.com/lycheeverse/lychee/releases/download/lychee-v0.23.0/lychee-x86_64-unknown-linux-gnu.tar.gz" | tar xz
+          chmod +x lychee
+          ./lychee http://localhost:3000 --no-progress --fail-on-error --exclude '^tel:' --exclude '^#'
+
+          # Smoke test
+          code=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000)
+          if [ "$code" != "200" ]; then echo "Expected 200, got $code"; exit 1; fi
+          curl -sf http://localhost:3000 | grep -q "Knox Racquet Stringing" || (echo "Missing: Knox Racquet Stringing"; exit 1)
+          curl -sf http://localhost:3000 | grep -q "Get in Touch" || (echo "Missing: Get in Touch"; exit 1)
+
+          # Pa11y accessibility
+          pa11y http://localhost:3000 --threshold 0
+
+          kill $SERVE_PID 2>/dev/null || true
