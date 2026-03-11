@@ -29,7 +29,11 @@ From the directory that contains `compose.yaml` and has the site in `./html`:
 docker compose up -d
 ```
 
-**Getting new code onto the server:** GitHub-hosted runners can’t reach a private IP. Use either a [self-hosted runner](.github/workflows/deploy.yml) (push from Actions) or [pull-based deploy](docs/deploy-pull.md) (server runs `scripts/pull-deploy.sh` on a cron schedule).
+**Getting new code onto the server:** The server uses [pull-based deploy](docs/deploy-pull.md) — run `scripts/pull-deploy.sh` on a cron schedule (e.g. hourly) so it pulls from GitHub and rsyncs into `./html`. To run the deploy once by hand (e.g. right after a push):
+
+```bash
+bash ~/Docker/KnoxStringing/repo/scripts/pull-deploy.sh
+```
 
 ## Tech
 

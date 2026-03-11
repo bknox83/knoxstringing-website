@@ -1,14 +1,8 @@
-# Dependabot: open PRs when Docker base images (and GitHub Actions) get updates
+# Dependabot: open PRs when GitHub Actions get updates (no Dockerfile in this repo)
 # https://docs.github.com/en/code-security/dependabot
 
 version: 2
 updates:
-  - package-ecosystem: "docker"
-    directory: "/"
-    schedule:
-      interval: "monthly"
-    open-pull-requests-limit: 5
-
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
