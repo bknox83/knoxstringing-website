@@ -198,10 +198,13 @@ a:hover { color: #164a32; text-decoration: underline; }
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
   gap: var(--space-md);
 }
 
 .hero-cta {
+  position: relative;
+  z-index: 1;
   background: rgba(28, 28, 26, 0.85);
   padding: var(--space-md);
   border-radius: var(--radius-lg);
@@ -210,6 +213,7 @@ a:hover { color: #164a32; text-decoration: underline; }
   width: 100%;
   align-self: center;
   margin-left: 0;
+  margin-right: 0;
   margin-top: 48vh;
   text-align: center;
 }
