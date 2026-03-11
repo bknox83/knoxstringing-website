@@ -44,6 +44,6 @@ jobs:
           curl -sf http://localhost:3000 | grep -q "Get in Touch" || (echo "Missing: Get in Touch"; exit 1)
 
           # Pa11y accessibility
-          pa11y http://localhost:3000 --threshold 0
+          pa11y http://localhost:3000 --threshold 0 --config pa11y.json
 
           kill $SERVE_PID 2>/dev/null || true
