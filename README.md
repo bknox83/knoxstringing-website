@@ -13,6 +13,7 @@ Static website for **Knox Racquet Stringing** — professional tennis and racque
 - **sitemap.xml** — Sitemap for search engines.
 - **robots.txt** — Crawler rules and sitemap URL.
 - **.github/workflows/ci.yml** — CI on push/PR to `main`: link check (Lychee), HTML validation (W3C Nu), JSON-LD LocalBusiness check, sitemap validation and URL check, Lighthouse CI (performance, accessibility, best practices, SEO), smoke test, accessibility (Pa11y).
+- **.github/dependabot.yml** — [Dependabot](https://docs.github.com/en/code-security/dependabot) version updates: weekly PRs for npm and GitHub Actions.
 - **lighthouserc.js** — Lighthouse CI config (score thresholds, URL to audit).
 - **scripts/** — `pull-deploy.sh` (deploy on server), `validate-jsonld.js` (LocalBusiness schema check).
 - **compose.yaml** — Docker Compose: Nginx serves the site; Cloudflare Tunnel (cloudflared) exposes it.
@@ -57,7 +58,7 @@ On every push and pull request to `main`, the **CI** workflow runs:
 
 On **push to `main` only** (after the above steps pass), a **deploy** job runs on a **self-hosted runner** on the server and executes `scripts/pull-deploy.sh` to pull the latest code and rsync into the Nginx `./html` directory. See [Deploy (Docker)](#deploy-docker).
 
-Runs on `ubuntu-latest` with Node 22; uses `actions/checkout@v5` and `actions/setup-node@v5`.
+Runs on `ubuntu-latest` with Node 22; uses `actions/checkout@v5` and `actions/setup-node@v5`. **Dependabot** opens PRs for dependency and Actions updates; merge when CI passes, then `git pull` and `npm install` locally to stay in sync.
 
 ## Tech
 
