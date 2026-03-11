@@ -35,7 +35,7 @@ jobs:
           # Lychee link checker
           curl -sSfL "https://github.com/lycheeverse/lychee/releases/download/lychee-v0.23.0/lychee-x86_64-unknown-linux-gnu.tar.gz" | tar xz
           chmod +x lychee
-          ./lychee http://localhost:3000 --no-progress --fail-on-error --exclude '^tel:' --exclude '^#'
+          ./lychee http://localhost:3000 --no-progress --exclude '^tel:' --exclude '^#'
 
           # Smoke test
           code=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000)
