@@ -11,30 +11,22 @@ If you use **GitHub-hosted** runners, they cannot reach a private IP (e.g. 192.1
    git clone https://github.com/bknox83/knoxstringing-website.git repo
    ```
 
-2. **Copy the pull script** from this repo’s `scripts/pull-deploy.sh` to the server (or create it there). Make it executable:
+2. **Copy the pull script** from this repo’s `scripts/pull-deploy.sh` to the server (or create it there). Use `bash` so it works even with Windows line endings or no execute bit:
 
    ```bash
-   chmod +x ~/Docker/KnoxStringing/scripts/pull-deploy.sh
+   bash ~/Docker/KnoxStringing/repo/scripts/pull-deploy.sh
    ```
 
-3. **Run it once** to confirm it works:
-
-   ```bash
-   ~/Docker/KnoxStringing/scripts/pull-deploy.sh
-   ```
-
-   That pulls the latest from `main` and copies the site files into `html/`.
-
-4. **Schedule it with cron** so it runs every 5–10 minutes (or hourly):
+3. **Schedule it with cron** so it runs every 5–10 minutes (or hourly):
 
    ```bash
    crontab -e
    ```
 
-   Add a line (adjust paths if yours differ):
+   Add a line — use `bash` and the path to the script inside the clone (adjust paths if yours differ):
 
    ```cron
-   */5 * * * * /home/brad/Docker/KnoxStringing/scripts/pull-deploy.sh >> /home/brad/Docker/KnoxStringing/deploy.log 2>&1
+   */5 * * * * bash /home/brad/Docker/KnoxStringing/repo/scripts/pull-deploy.sh >> /home/brad/Docker/KnoxStringing/deploy.log 2>&1
    ```
 
    Now whenever you push to `main`, the server will have the new files within a few minutes.

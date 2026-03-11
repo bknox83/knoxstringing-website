@@ -4,6 +4,7 @@
 
 set -e
 
+echo "$(date -Iseconds 2>/dev/null || date): pull-deploy started"
 REPO_DIR="${REPO_DIR:-$HOME/Docker/KnoxStringing/repo}"
 HTML_DIR="${HTML_DIR:-$HOME/Docker/KnoxStringing/html}"
 

@@ -1,0 +1,2 @@
+# Force LF line endings for shell scripts (avoids "Permission denied" on Linux when run via cron)
+*.sh text eol=lf

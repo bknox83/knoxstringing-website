@@ -29,6 +29,8 @@ From the directory that contains `compose.yaml` and has the site in `./html`:
 docker compose up -d
 ```
 
+**Getting new code onto the server:** GitHub-hosted runners can’t reach a private IP. Use either a [self-hosted runner](.github/workflows/deploy.yml) (push from Actions) or [pull-based deploy](docs/deploy-pull.md) (server runs `scripts/pull-deploy.sh` on a cron schedule).
+
 ## Tech
 
 - Plain HTML, CSS, and JavaScript (no frameworks).

@@ -1,0 +1,44 @@
+# Deploy site to your server on every push to main.
+# Uses a SELF-HOSTED runner (GitHub-hosted runners cannot reach a private IP like 192.168.1.x).
+#
+# Option 1 — Self-hosted runner (this workflow):
+#   1. On a machine that can SSH to your server (e.g. the server itself or another PC on your LAN),
+#      add a GitHub Actions runner: repo → Settings → Actions → Runners → New self-hosted runner.
+#   2. Use the same labels (self-hosted, linux) when installing.
+#   3. Add repo secrets: REMOTE_HOST, REMOTE_USER, REMOTE_PATH, SSH_PRIVATE_KEY.
+#   Then every push to main will run this job on your runner and rsync to the server.
+#
+# Option 2 — Server pulls from GitHub (no runner): see docs/deploy-pull.md and scripts/pull-deploy.sh.
+
+name: Deploy to server
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: [self-hosted, linux]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Deploy via rsync
+        env:
+          SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+          REMOTE_USER: ${{ secrets.REMOTE_USER }}
+          REMOTE_PATH: ${{ secrets.REMOTE_PATH }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          rsync -avz --delete \
+            --exclude '.git' \
+            --exclude '.github' \
+            --exclude 'compose.yaml' \
+            --exclude 'nginx.conf' \
+            --exclude 'README.md' \
+            --exclude '.gitignore' \
+            -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=accept-new" \
+            . "$REMOTE_USER@$REMOTE_HOST:$REMOTE_PATH/"
