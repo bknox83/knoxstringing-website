@@ -201,6 +201,10 @@ a:hover { color: #164a32; text-decoration: underline; }
 .hero-content {
   position: relative;
   z-index: 1;
+  background: rgba(28, 28, 26, 0.78);
+  padding: var(--space-lg);
+  border-radius: var(--radius-lg);
+  max-width: 36rem;
 }
 
 .hero-label {
@@ -497,6 +501,9 @@ a:hover { color: #164a32; text-decoration: underline; }
 .process-inner {
   position: relative;
   z-index: 1;
+  background: rgba(28, 28, 26, 0.82);
+  padding: var(--space-xl);
+  border-radius: var(--radius-lg);
 }
 .process .section-title {
   color: var(--color-white);
