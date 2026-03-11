@@ -206,7 +206,7 @@ a:hover { color: #164a32; text-decoration: underline; }
   padding: var(--space-md);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-strong);
-  max-width: 20rem;
+  max-width: 22rem;
   width: 100%;
   align-self: center;
   margin-left: 0;
