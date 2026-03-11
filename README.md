@@ -29,7 +29,7 @@ From the directory that contains `compose.yaml` and has the site in `./html`:
 docker compose up -d
 ```
 
-**Getting new code onto the server:** The server uses [pull-based deploy](docs/deploy-pull.md) — run `scripts/pull-deploy.sh` on a cron schedule (e.g. hourly) so it pulls from GitHub and rsyncs into `./html`. To run the deploy once by hand (e.g. right after a push):
+**Getting new code onto the server:** Run `scripts/pull-deploy.sh` on a cron schedule (e.g. hourly) so the server pulls from GitHub and rsyncs into `./html`. To run the deploy once by hand (e.g. right after a push):
 
 ```bash
 bash ~/Docker/KnoxStringing/repo/scripts/pull-deploy.sh

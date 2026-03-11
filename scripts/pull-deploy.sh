@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Pull latest from GitHub and copy site files into the Nginx html folder.
-# Run this on the server (e.g. via cron). See docs/deploy-pull.md.
+# Run this on the server (e.g. via cron).
 
 set -e
 
