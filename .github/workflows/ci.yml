@@ -21,6 +21,14 @@ jobs:
         run: |
           docker run --rm -v "$PWD:/data" ghcr.io/validator/validator:latest vnu --skip-non-html /data/index.html
 
+      - name: JSON-LD LocalBusiness schema validation
+        run: node scripts/validate-jsonld.js
+
+      - name: Sitemap validation
+        run: |
+          xmllint --noout sitemap.xml || (echo "sitemap.xml: invalid XML"; exit 1)
+          grep -q '<loc>' sitemap.xml || (echo "sitemap.xml: no <loc> entries"; exit 1)
+
       - name: Setup Node
         uses: actions/setup-node@v5
         with:
@@ -39,6 +47,9 @@ jobs:
           curl -sSfL "https://github.com/lycheeverse/lychee/releases/download/lychee-v0.23.0/lychee-x86_64-unknown-linux-gnu.tar.gz" | tar xz
           chmod +x lychee
           ./lychee http://localhost:3000 --no-progress --exclude '^tel:' --exclude '^#' --exclude 'formspree\.io'
+
+          # Sitemap URLs: assert all return 200 when served locally
+          sed -n 's|.*<loc>\([^<]*\)</loc>.*|\1|p' sitemap.xml | sed 's|https://knoxstringing.com|http://localhost:3000|g' | ./lychee --no-progress -
 
           # Smoke test
           code=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000)
