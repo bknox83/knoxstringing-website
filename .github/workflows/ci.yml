@@ -26,8 +26,21 @@ jobs:
 
       - name: Sitemap validation
         run: |
-          xmllint --noout sitemap.xml || (echo "sitemap.xml: invalid XML"; exit 1)
-          grep -q '<loc>' sitemap.xml || (echo "sitemap.xml: no <loc> entries"; exit 1)
+          python3 -c "
+          import xml.etree.ElementTree as ET
+          try:
+              t = ET.parse('sitemap.xml')
+              r = t.getroot()
+              ns = 'http://www.sitemaps.org/schemas/sitemap/0.9'
+              locs = r.findall('.//{%s}loc' % ns)
+              if not locs:
+                  print('sitemap.xml: no <loc> entries')
+                  exit(1)
+              print('sitemap.xml: valid,', len(locs), 'URL(s)')
+          except ET.ParseError as e:
+              print('sitemap.xml: invalid XML', e)
+              exit(1)
+          "
 
       - name: Setup Node
         uses: actions/setup-node@v5
