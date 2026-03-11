@@ -1,0 +1,21 @@
+---
+description: Run npm run build after editing CSS or JS so minified assets stay in sync
+globs: assets/css/**/*.css, assets/js/**/*.js
+alwaysApply: false
+---
+
+# Build after CSS/JS changes
+
+This project serves **minified** CSS and JS (`styles.min.css`, `script.min.js`). The HTML references those files.
+
+**After editing any of these files**, run:
+
+```bash
+npm run build
+```
+
+so that the minified outputs are updated. Otherwise the site will not reflect your changes until you build.
+
+**Files that require a build after change:**
+- `assets/css/styles.css`
+- `assets/js/script.js`

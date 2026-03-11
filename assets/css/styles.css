@@ -504,11 +504,10 @@ a:hover { color: #164a32; text-decoration: underline; }
   position: relative;
   z-index: 1;
   background: rgba(28, 28, 26, 0.82);
-  padding: var(--space-xl);
+  padding: var(--space-md);
   border-radius: var(--radius-lg);
-  max-width: 36rem;
-  margin-left: auto;
-  margin-right: auto;
+  max-width: 28rem;
+  margin: var(--space-md) auto;
 }
 .process .section-title {
   color: var(--color-white);
@@ -517,7 +516,7 @@ a:hover { color: #164a32; text-decoration: underline; }
   list-style: none;
   padding: 0;
   margin: 0 auto;
-  max-width: 600px;
+  max-width: 100%;
 }
 .process-list li {
   display: flex;
