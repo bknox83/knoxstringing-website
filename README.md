@@ -11,6 +11,7 @@ Static website for **Knox Racquet Stringing** — professional tennis and racque
   - **images/** — Logos, hero/process backgrounds, content images (SVG, WebP, PNG).
 - **sitemap.xml** — Sitemap for search engines.
 - **robots.txt** — Crawler rules and sitemap URL.
+- **.github/workflows/ci.yml** — CI on push/PR to `main`: link check (Lychee), HTML validation (W3C Nu), smoke test, accessibility (Pa11y).
 - **compose.yaml** — Docker Compose: Nginx serves the site; Cloudflare Tunnel (cloudflared) exposes it.
 - **nginx.conf** — Nginx config (gzip, cache rules for HTML vs assets, `index.html` fallback).
 
@@ -34,6 +35,17 @@ docker compose up -d
 ```bash
 bash ~/Docker/KnoxStringing/repo/scripts/pull-deploy.sh
 ```
+
+## CI (GitHub Actions)
+
+On every push and pull request to `main`, the **CI** workflow runs:
+
+- **Link check** — [Lychee](https://github.com/lycheeverse/lychee) checks that links (excluding `tel:`, `#`, and Formspree) resolve.
+- **HTML validation** — [W3C Nu Validator](https://validator.github.io/validator/) (via Docker) validates `index.html`.
+- **Smoke test** — Serves the site locally and checks for HTTP 200 and expected content (“Knox Racquet Stringing”, “Get in Touch”).
+- **Accessibility** — [Pa11y](https://pa11y.org/) runs against the contact page with config in `pa11y.json`.
+
+Runs on `ubuntu-latest` with Node 22; uses `actions/checkout@v5` and `actions/setup-node@v5`.
 
 ## Tech
 
