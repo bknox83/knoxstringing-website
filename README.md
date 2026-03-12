@@ -2,21 +2,27 @@
 
 Professional tennis and racquetball stringing in Waukee, Des Moines, and the greater central Iowa area.
 
----
+[Website][website-link]
+·
+[Report bug][issue-link]
+·
+[Contributing](CONTRIBUTING.md)
+·
+[Security][security-link]
 
-## Contents
+[![CI][ci-badge]][ci-link]
+[![License][license-badge]][license-link]
+[![Release][release-badge]][release-link]
+[![Last commit][commits-badge]][commits-link]
+[![Website][website-badge]][website-link]
 
-- [What's in this repo](#whats-in-this-repo)
-- [Deploy](#deploy)
-- [CI](#ci)
-- [Code scanning (CodeQL)](#code-scanning-codeql)
-- [Tech](#tech)
-- [Code of conduct](#code-of-conduct)
-- [License](#license)
+## Overview
 
----
+[Knox Racquet Stringing][website-link] is a **static website** for a professional racquet stringing business in central Iowa. The site is plain HTML, CSS, and JavaScript (no frameworks). Contact form submissions are handled by [Formspree][formspree-link]; there is no backend in this repo. The live site is built and deployed via [CI][ci-link] on push to `main`.
 
-## What's in this repo
+## Files
+
+This repository contains:
 
 | Path | Description |
 |------|-------------|
@@ -30,17 +36,25 @@ Professional tennis and racquetball stringing in Waukee, Des Moines, and the gre
 | `.github/workflows/ci.yml` | CI on push/PR to `main`: workflow lint, lockfile check, HTML validation, JSON-LD, sitemap, Lighthouse CI, Lychee links, smoke test, Pa11y. |
 | `.github/workflows/codeql.yml` | CodeQL security analysis (JavaScript), on push/PR and weekly. |
 | `.github/workflows/dependabot-auto-merge.yml` | Enables auto-merge for Dependabot PRs when CI passes. |
-| `.github/dependabot.yml` | [Dependabot](https://docs.github.com/en/code-security/dependabot) — weekly PRs for npm and GitHub Actions. |
+| `.github/dependabot.yml` | [Dependabot][dependabot-link] — weekly PRs for npm and GitHub Actions. |
 | `lighthouserc.js` | Lighthouse CI config (score thresholds, URL to audit). |
 | `scripts/` | `pull-deploy.sh` (deploy on server), `validate-jsonld.js` (LocalBusiness schema check). |
 | `compose.yaml` | Docker Compose: Nginx + Cloudflare Tunnel (cloudflared). |
 | `nginx.conf` | Nginx config (gzip, cache rules, `index.html` fallback). |
 
-Contact form submissions are handled by [Formspree](https://formspree.io); there is no backend in this repo.
+## Contributing
 
----
+See [Contributing Guide](CONTRIBUTING.md).
 
-## Deploy 🚀
+### Code of conduct
+
+Participation in this project (issues, pull requests, discussions) is governed by the [Contributor Covenant Code of Conduct][conduct-link].
+
+### Security
+
+To report a vulnerability privately, see [SECURITY.md][security-link].
+
+## Deploy
 
 The site runs with **Docker Compose**:
 
@@ -53,7 +67,7 @@ From the directory that contains `compose.yaml` and has the site in `./html`:
 docker compose up -d
 ```
 
-**Getting new code onto the server:** On every push to `main`, CI runs and then a **deploy** job runs on a **self-hosted runner** on the server. It executes `scripts/pull-deploy.sh`, which pulls from GitHub, runs `npm ci`/`npm install` and `npm run build`, then rsyncs into the Nginx docroot. The server must have Node.js installed. See [CI](#ci).
+**Getting new code onto the server:** On every push to `main`, [CI][ci-link] runs and then a **deploy** job runs on a **self-hosted runner** on the server. It executes `scripts/pull-deploy.sh`, which pulls from GitHub, runs `npm ci`/`npm install` and `npm run build`, then rsyncs into the Nginx docroot. The server must have Node.js installed.
 
 To deploy by hand on the server:
 
@@ -61,61 +75,48 @@ To deploy by hand on the server:
 bash ~/Docker/KnoxStringing/repo/scripts/pull-deploy.sh
 ```
 
----
+## CI
 
-## CI ✅
+On every **push** and **pull request** to `main`, the CI workflow runs: workflow lint ([actionlint][actionlint-link]), lockfile check, HTML validation (W3C Nu), JSON-LD and sitemap checks, build and `npm audit`, [Lighthouse CI][lighthouse-link], [Lychee][lychee-link] link check, smoke test, and [Pa11y][pa11y-link] accessibility. On **push to `main` only** (after all checks pass), the deploy job runs on the self-hosted runner. Check [CI status][ci-link] and [releases][release-link] on GitHub.
 
-On every **push** and **pull request** to `main`, the CI workflow runs:
+Runs on `ubuntu-latest` with Node 22. [Dependabot][dependabot-link] opens PRs for npm and Actions; enable “Allow auto-merge” in repo settings so Dependabot PRs merge when CI passes.
 
-| Step | What it does |
-|------|----------------|
-| **Workflow lint** | [actionlint](https://github.com/rhysd/actionlint) checks `.github/workflows/*.yml` for syntax and best practices. |
-| **Lockfile check** | Ensures `package-lock.json` is in sync with `package.json`; fails if you need to run `npm install` and commit the lockfile. |
-| **HTML validation** | [W3C Nu Validator](https://validator.github.io/validator/) (Docker) validates `index.html`. |
-| **JSON-LD** | `scripts/validate-jsonld.js` checks the `application/ld+json` LocalBusiness block. |
-| **Sitemap** | Validates `sitemap.xml` and runs Lychee on all sitemap URLs against the local server. |
-| **Build & audit** | `npm ci` and `npm run build`; `npm audit --audit-level=high` fails on high/critical vulnerabilities. |
-| **Lighthouse CI** | Single audit (performance, accessibility, best practices, SEO) with thresholds in `lighthouserc.js`. |
-| **Link check** | [Lychee](https://github.com/lycheeverse/lychee) checks links (excluding `tel:`, `#`, Formspree). |
-| **Smoke test** | HTTP 200 and expected content (“Knox Racquet Stringing”, “Get in Touch”). |
-| **Accessibility** | [Pa11y](https://pa11y.org/) against the contact page (`pa11y.json`). |
+### Code scanning (CodeQL)
 
-On **push to `main` only** (after all checks pass), the **deploy** job runs on the self-hosted runner and executes `scripts/pull-deploy.sh`. See [Deploy](#deploy).
-
-Runs on `ubuntu-latest` with Node 22. **Dependabot** opens PRs for npm and Actions; enable “Allow auto-merge” in repo settings so Dependabot PRs merge when CI passes.
-
----
-
-## Code scanning (CodeQL) 🔒
-
-The **CodeQL** workflow (`.github/workflows/codeql.yml`) runs on push/PR to `main` and weekly. It analyzes JavaScript for security issues and dependency concerns.
-
-To see results in the **Security** tab and get alerts:
-
-1. In the repo: **Settings → Code security and analysis**.
-2. Under **Code scanning**, click **Set up** (or **Configure**) for **CodeQL analysis**.
-
-If Code scanning is not enabled, the workflow still runs; enabling it surfaces results and optional PR checks.
-
----
+The [CodeQL][codeql-link] workflow runs on push/PR to `main` and weekly. To see results in the **Security** tab, enable Code scanning under **Settings → Code security and analysis**.
 
 ## Tech
 
 - Plain HTML, CSS, and JavaScript (no frameworks).
-- [Google Fonts](https://fonts.google.com): Outfit, Instrument Serif.
-- [Formspree](https://formspree.io) for the contact form.
+- [Google Fonts][fonts-link]: Outfit, Instrument Serif.
+- [Formspree][formspree-link] for the contact form.
 - **Docker** & **Docker Compose** — Nginx and Cloudflare Tunnel in containers.
 - **Nginx** — static files (gzip, caching).
-- **cloudflared** — [Cloudflare Tunnel](https://developers.cloudflare.com/cloudflare-one/connections/connect-apps/) to expose the site without opening ports.
-
----
-
-## Code of conduct
-
-Participation in this project (issues, pull requests, discussions) is governed by the [Contributor Covenant Code of Conduct](CODE_OF_CONDUCT.md).
-
----
+- **cloudflared** — [Cloudflare Tunnel][cloudflare-link] to expose the site without opening ports.
 
 ## License
 
-This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
+This project is licensed under the [MIT License][license-link]. You may use, copy, modify, and distribute the software, provided you include the license and copyright notice. See the [LICENSE][license-link] file for the full text.
+
+[actionlint-link]: https://github.com/rhysd/actionlint
+[ci-badge]: https://img.shields.io/github/actions/workflow/status/bknox83/knoxstringing-website/ci.yml?branch=main&label=CI
+[ci-link]: https://github.com/bknox83/knoxstringing-website/actions
+[cloudflare-link]: https://developers.cloudflare.com/cloudflare-one/connections/connect-apps/
+[codeql-link]: https://github.com/bknox83/knoxstringing-website/blob/main/.github/workflows/codeql.yml
+[commits-badge]: https://img.shields.io/github/last-commit/bknox83/knoxstringing-website
+[commits-link]: https://github.com/bknox83/knoxstringing-website/commits/main
+[conduct-link]: CODE_OF_CONDUCT.md
+[dependabot-link]: https://docs.github.com/en/code-security/dependabot
+[fonts-link]: https://fonts.google.com
+[formspree-link]: https://formspree.io
+[issue-link]: https://github.com/bknox83/knoxstringing-website/issues/new
+[license-badge]: https://img.shields.io/github/license/bknox83/knoxstringing-website
+[license-link]: LICENSE
+[lighthouse-link]: https://github.com/GoogleChrome/lighthouse-ci
+[lychee-link]: https://github.com/lycheeverse/lychee
+[pa11y-link]: https://pa11y.org
+[release-badge]: https://img.shields.io/github/v/release/bknox83/knoxstringing-website
+[release-link]: https://github.com/bknox83/knoxstringing-website/releases
+[security-link]: SECURITY.md
+[website-badge]: https://img.shields.io/website?url=https%3A%2F%2Fknoxstringing.com&label=site
+[website-link]: https://knoxstringing.com
