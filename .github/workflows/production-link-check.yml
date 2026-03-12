@@ -18,4 +18,4 @@ jobs:
         run: |
           curl -sSfL "https://github.com/lycheeverse/lychee/releases/download/lychee-v0.23.0/lychee-x86_64-unknown-linux-gnu.tar.gz" | tar xz
           chmod +x lychee
-          ./lychee https://knoxstringing.com --no-progress --exclude '^tel:' --exclude '^#' --exclude 'formspree\.io'
+          ./lychee https://knoxstringing.com --no-progress --exclude '^tel:' --exclude '^#' --exclude 'formspree\.io' --exclude 'cdn-cgi/l/email-protection'
