@@ -1,6 +1,6 @@
 # CI: link check (lychee), HTML validation (W3C Nu), smoke test, accessibility (pa11y).
 # Deploy: on push to main (after CI passes), runs on self-hosted runner and executes scripts/pull-deploy.sh.
-name: CI
+name: ✅ CI
 
 on:
   push:

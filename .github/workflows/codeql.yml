@@ -1,7 +1,7 @@
 # CodeQL security analysis (JavaScript)
 # https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors
 
-name: CodeQL
+name: 🔒 CodeQL
 
 on:
   push:
