@@ -1,5 +1,7 @@
 # Security Policy
 
+If you believe you’ve found a security vulnerability, please report it privately as described below.
+
 ## Supported versions
 
 We support the **current default branch** (`main`) with security updates. We do not maintain separate release branches or versioned releases.

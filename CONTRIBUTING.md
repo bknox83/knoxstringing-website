@@ -6,6 +6,7 @@ Thanks for your interest in contributing to Knox Racquet Stringing.
 
 - **Open an issue** to suggest a change, report a bug, or ask a question.
 - **Open a pull request** for small fixes (typos, docs, accessibility, etc.). For larger changes, opening an issue first is helpful so we can align before you spend time.
+- **Security issues:** Please report vulnerabilities privately; see [SECURITY.md](SECURITY.md).
 
 ## Development setup
 

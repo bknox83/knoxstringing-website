@@ -118,4 +118,4 @@ Participation in this project (issues, pull requests, discussions) is governed b
 
 ## License
 
-© Knox Racquet Stringing. All rights reserved.
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
