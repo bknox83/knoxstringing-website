@@ -1,6 +1,6 @@
 <div align="center">
  
-  <img src="assets/images/knox-logo.png" alt="Knox Racquet Stringing" width="200" />
+  <a href="https://knoxstringing.com"><img src="assets/images/knox-logo.png" alt="Knox Racquet Stringing" width="200" /></a>
   <h3>Knox Racquet Stringing</h3>
 
   Professional tennis and racquetball stringing in Waukee, Des Moines, and the greater central Iowa area.
@@ -24,18 +24,12 @@ This is a static website for a professional racquet stringing business in centra
 
 ## Deploy
 
-The site runs with **Docker Compose**:
+The site runs with **Docker Compose**
 
-- **website** — Nginx serves static files from `./html` (copy or mount the built site there, or point the volume at the repo and set `root` in `nginx.conf` accordingly).
-- **tunnel** — Cloudflare Tunnel (`cloudflared`) exposes the service. Set `TUNNEL_TOKEN` in the environment (e.g. in a non-committed `.env` file).
+- **Website** — NGINX serves static files from `./html`
+- **Tunnel** — A Cloudflare Tunnel exposes the service.
 
-Getting new code onto the server: On every push to `main`, [CI][ci-link] runs and then a deploy job runs on a self-hosted runner on the server. It executes `scripts/pull-deploy.sh`, which pulls from GitHub, runs `npm ci`/`npm install` and `npm run build`, then rsyncs into the Nginx docroot. The server must have Node.js installed.
-
-To deploy by hand on the server:
-
-```bash
-bash ~/Docker/KnoxStringing/repo/scripts/pull-deploy.sh
-```
+Getting new code onto the server: On every push to `main`, a deploy job runs on a self-hosted runner on the server. It executes `scripts/pull-deploy.sh`, which pulls from GitHub.
 
 [ci-link]:          https://github.com/bknox83/knoxstringing-website/actions/workflows/ci.yml
 [codeql-link]:      https://github.com/bknox83/knoxstringing-website/actions/workflows/codeql.yml
