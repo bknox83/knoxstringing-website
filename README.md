@@ -7,13 +7,14 @@
   <br>
   <br>
 
-  [![CI-Build][ci-badge]][ci-link]
-  [![CodeQL-Build][codeql-badge]][codeql-link]
-  [![License][license-badge]][license-link]
+  [![CI][ci-badge]][ci-link]
+  [![CodeQL][codeql-badge]][codeql-link]
+  [![Link-Check][linkcheck-badge]][linkcheck-link]
   <br>
   [![Release][release-badge]][release-link]
   [![Commits][commits-badge]][commits-link]
   [![Website][website-badge]][website-link]
+  [![License][license-badge]][license-link]
 
 </div>
 
@@ -41,12 +42,14 @@ bash ~/Docker/KnoxStringing/repo/scripts/pull-deploy.sh
 [commits-link]:     https://github.com/bknox83/knoxstringing-website/commits/main
 [formspree-link]:   https://formspree.io
 [license-link]:     https://github.com/bknox83/knoxstringing-website/blob/main/LICENSE
+[linkcheck-link]:   https://github.com/bknox83/knoxstringing-website/actions/workflows/production-link-check.yml
 [release-link]:     https://github.com/bknox83/knoxstringing-website/releases/latest
 [website-link]:     https://knoxstringing.com
 
-[ci-badge]:         https://img.shields.io/github/actions/workflow/status/bknox83/knoxstringing-website/ci.yml?branch=main&label=CI-Build&style=for-the-badge
-[codeql-badge]:     https://img.shields.io/github/actions/workflow/status/bknox83/knoxstringing-website/codeql.yml?branch=main&label=CodeQL-Build&style=for-the-badge
+[ci-badge]:         https://img.shields.io/github/actions/workflow/status/bknox83/knoxstringing-website/ci.yml?branch=main&label=CI&style=for-the-badge
+[codeql-badge]:     https://img.shields.io/github/actions/workflow/status/bknox83/knoxstringing-website/codeql.yml?branch=main&label=CodeQL&style=for-the-badge
 [commits-badge]:    https://img.shields.io/github/commits-since/bknox83/knoxstringing-website/latest?style=for-the-badge
 [license-badge]:    https://img.shields.io/github/license/bknox83/knoxstringing-website?style=for-the-badge&color=orange
+[linkcheck-badge]:  https://img.shields.io/github/actions/workflow/status/bknox83/knoxstringing-website/production-link-check.yml?branch=main&label=Link-Check&style=for-the-badge
 [release-badge]:    https://img.shields.io/github/v/release/bknox83/knoxstringing-website?style=for-the-badge
 [website-badge]:    https://img.shields.io/website?url=https%3A%2F%2Fknoxstringing.com&label=website&style=for-the-badge
