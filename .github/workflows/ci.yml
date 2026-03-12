@@ -20,7 +20,7 @@ jobs:
           fetch-depth: 20
 
       - name: Lint workflows
-        uses: rhysd/actionlint-action@v1
+        uses: eifinger/actionlint-action@v1
 
       - name: HTML validation (W3C Nu)
         run: |
