@@ -1,18 +1,22 @@
 <div align="center">
-
+ 
   <img src="assets/images/knox-logo.png" alt="Knox Racquet Stringing" width="200" />
 
-  **Knox Racquet Stringing**
+  <h3>Knox Racquet Stringing</h3>
 
   Professional tennis and racquetball stringing in Waukee, Des Moines, and the greater central Iowa area.
+  <br>
+  <br>
+
+  [![Build-CI][ci-badge]][ci-link]
+  [![Build-CodeQL][codeql-badge]][codeql-link]
+  [![License][license-badge]][license-link]
+  <br>
+  [![Release][release-badge]][release-link]
+  [![Commits][commits-badge]][commits-link]
+  [![Website][website-badge]][website-link]
 
 </div>
-
-[![CI][ci-badge]][ci-link]
-[![License][license-badge]][license-link]
-[![Release][release-badge]][release-link]
-[![Last commit][commits-badge]][commits-link]
-[![Website][website-badge]][website-link]
 
 ## Overview
 
@@ -80,22 +84,24 @@ The [CodeQL][codeql-link] workflow runs on push/PR to `main` and weekly. To see 
 - **Nginx** — static files (gzip, caching).
 - **cloudflared** — [Cloudflare Tunnel][cloudflare-link] to expose the site without opening ports.
 
-[actionlint-link]: https://github.com/rhysd/actionlint
-[ci-badge]: https://img.shields.io/github/actions/workflow/status/bknox83/knoxstringing-website/ci.yml?branch=main&label=CI&style=for-the-badge
-[ci-link]: https://github.com/bknox83/knoxstringing-website/actions
-[cloudflare-link]: https://developers.cloudflare.com/cloudflare-one/connections/connect-apps/
-[codeql-link]: https://github.com/bknox83/knoxstringing-website/blob/main/.github/workflows/codeql.yml
-[commits-badge]: https://img.shields.io/github/last-commit/bknox83/knoxstringing-website?style=for-the-badge
-[commits-link]: https://github.com/bknox83/knoxstringing-website/commits/main
-[dependabot-link]: https://docs.github.com/en/code-security/dependabot
-[fonts-link]: https://fonts.google.com
-[formspree-link]: https://formspree.io
-[license-badge]: https://img.shields.io/github/license/bknox83/knoxstringing-website?style=for-the-badge
-[license-link]: LICENSE
-[lighthouse-link]: https://github.com/GoogleChrome/lighthouse-ci
-[lychee-link]: https://github.com/lycheeverse/lychee
-[pa11y-link]: https://pa11y.org
-[release-badge]: https://img.shields.io/github/v/release/bknox83/knoxstringing-website?style=for-the-badge
-[release-link]: https://github.com/bknox83/knoxstringing-website/releases
-[website-badge]: https://img.shields.io/website?url=https%3A%2F%2Fknoxstringing.com&label=site&style=for-the-badge
-[website-link]: https://knoxstringing.com
+[actionlint-link]:  https://github.com/rhysd/actionlint
+[ci-link]:          https://github.com/bknox83/knoxstringing-website/actions/workflows/ci.yml
+[cloudflare-link]:  https://developers.cloudflare.com/cloudflare-one/connections/connect-apps/
+[codeql-link]:      https://github.com/bknox83/knoxstringing-website/actions/workflows/codeql.yml
+[commits-link]:     https://github.com/bknox83/knoxstringing-website/commits/main
+[dependabot-link]:  https://docs.github.com/en/code-security/dependabot
+[fonts-link]:       https://fonts.google.com
+[formspree-link]:   https://formspree.io
+[license-link]:     https://github.com/bknox83/knoxstringing-website/blob/main/LICENSE
+[lighthouse-link]:  https://github.com/GoogleChrome/lighthouse-ci
+[lychee-link]:      https://github.com/lycheeverse/lychee
+[pa11y-link]:       https://pa11y.org
+[release-link]:     https://github.com/bknox83/knoxstringing-website/releases/latest
+[website-link]:     https://knoxstringing.com
+
+[ci-badge]:         https://img.shields.io/github/actions/workflow/status/bknox83/knoxstringing-website/ci.yml?branch=main&label=Build-CI&style=for-the-badge
+[codeql-badge]:     https://img.shields.io/github/actions/workflow/status/bknox83/knoxstringing-website/codeql.yml?branch=main&label=Build-CodeQL&style=for-the-badge
+[commits-badge]:    https://img.shields.io/github/commits-since/bknox83/knoxstringing-website/latest?style=for-the-badge
+[license-badge]:    https://img.shields.io/github/license/bknox83/knoxstringing-website?style=for-the-badge&color=orange
+[release-badge]:    https://img.shields.io/github/v/release/bknox83/knoxstringing-website?style=for-the-badge
+[website-badge]:    https://img.shields.io/website?url=https%3A%2F%2Fknoxstringing.com&label=website&style=for-the-badge
