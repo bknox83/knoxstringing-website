@@ -1,0 +1,21 @@
+# Weekly link check against production (catches broken external links over time).
+# CI only checks links against localhost.
+name: Production link check
+
+on:
+  schedule:
+    - cron: "0 0 * * 1"  # Monday 00:00 UTC
+  workflow_dispatch:
+
+jobs:
+  linkcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Lychee link check (production)
+        run: |
+          curl -sSfL "https://github.com/lycheeverse/lychee/releases/download/lychee-v0.23.0/lychee-x86_64-unknown-linux-gnu.tar.gz" | tar xz
+          chmod +x lychee
+          ./lychee https://knoxstringing.com --no-progress --exclude '^tel:' --exclude '^#' --exclude 'formspree\.io'
