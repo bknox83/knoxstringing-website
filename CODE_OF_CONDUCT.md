@@ -1,5 +1,7 @@
 # Contributor Covenant Code of Conduct
 
+This code of conduct applies to participation in this project: issues, pull requests, discussions, and related spaces.
+
 ## Our Pledge
 
 We as members, contributors, and leaders pledge to make participation in our
@@ -59,9 +61,11 @@ representative at an online or offline event.
 ## Enforcement
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
-reported to the community leaders responsible for enforcement at
-.
-All complaints will be reviewed and investigated promptly and fairly.
+reported to the project maintainers. To report privately, contact the
+repository owner (see the repository's About section or maintainer list on
+GitHub), or use the repository's **Security** tab → **Report a vulnerability**
+for confidential disclosure. All complaints will be reviewed and investigated
+promptly and fairly.
 
 All community leaders are obligated to respect the privacy and security of the
 reporter of any incident.

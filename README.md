@@ -11,6 +11,7 @@ Professional tennis and racquetball stringing in Waukee, Des Moines, and the gre
 - [CI](#ci)
 - [Code scanning (CodeQL)](#code-scanning-codeql)
 - [Tech](#tech)
+- [Code of conduct](#code-of-conduct)
 - [License](#license)
 
 ---
@@ -106,6 +107,12 @@ If Code scanning is not enabled, the workflow still runs; enabling it surfaces r
 - **Docker** & **Docker Compose** — Nginx and Cloudflare Tunnel in containers.
 - **Nginx** — static files (gzip, caching).
 - **cloudflared** — [Cloudflare Tunnel](https://developers.cloudflare.com/cloudflare-one/connections/connect-apps/) to expose the site without opening ports.
+
+---
+
+## Code of conduct
+
+Participation in this project (issues, pull requests, discussions) is governed by the [Contributor Covenant Code of Conduct](CODE_OF_CONDUCT.md).
 
 ---
 
