@@ -1,21 +1,26 @@
 ---
-description: Run npm run build after editing CSS or JS so minified assets stay in sync
+description: Run npm run build and bump asset versions in index.html after editing CSS or JS
 globs: assets/css/**/*.css, assets/js/**/*.js
 alwaysApply: false
 ---
 
-# Build after CSS/JS changes
+# Build and version bump after CSS/JS changes
 
-This project serves **minified** CSS and JS (`styles.min.css`, `script.min.js`). The HTML references those files.
+This project serves **minified** CSS and JS (`styles.min.css`, `script.min.js`). The HTML references them with a cache-busting query parameter (`?v=...`).
 
-**After editing any of these files**, run:
+**After editing any of these files:**
 
-```bash
-npm run build
-```
+1. **Run the build:**
+   ```bash
+   npm run build
+   ```
 
-so that the minified outputs are updated. Otherwise the site will not reflect your changes until you build.
+2. **Bump the version in `index.html`** so browsers fetch the new file instead of using cache. Update the `?v=` value for the asset(s) you changed:
+   - **CSS changes** → update `v=...` on both the preload and the stylesheet link for `styles.min.css` (use the same new value for both).
+   - **JS changes** → update `v=...` on the script tag for `script.min.js`.
 
-**Files that require a build after change:**
-- `assets/css/styles.css`
-- `assets/js/script.js`
+   Use a new value each time (e.g. increment patch: `2.0.0` → `2.0.1`, or use semver that makes sense).
+
+**Files that require build + version bump:**
+- `assets/css/styles.css` → build, then bump CSS version in index.html
+- `assets/js/script.js` → build, then bump JS version in index.html
