@@ -1,14 +1,12 @@
-# Knox Racquet Stringing
+<div align="center">
 
-Professional tennis and racquetball stringing in Waukee, Des Moines, and the greater central Iowa area.
+  <img src="assets/images/knox-logo.png" alt="Knox Racquet Stringing" width="200" />
 
-[Website][website-link]
-·
-[Report bug][issue-link]
-·
-[Contributing](CONTRIBUTING.md)
-·
-[Security][security-link]
+  **Knox Racquet Stringing**
+
+  Professional tennis and racquetball stringing in Waukee, Des Moines, and the greater central Iowa area.
+
+</div>
 
 [![CI][ci-badge]][ci-link]
 [![License][license-badge]][license-link]
@@ -41,18 +39,6 @@ This repository contains:
 | `scripts/` | `pull-deploy.sh` (deploy on server), `validate-jsonld.js` (LocalBusiness schema check). |
 | `compose.yaml` | Docker Compose: Nginx + Cloudflare Tunnel (cloudflared). |
 | `nginx.conf` | Nginx config (gzip, cache rules, `index.html` fallback). |
-
-## Contributing
-
-See [Contributing Guide](CONTRIBUTING.md).
-
-### Code of conduct
-
-Participation in this project (issues, pull requests, discussions) is governed by the [Contributor Covenant Code of Conduct][conduct-link].
-
-### Security
-
-To report a vulnerability privately, see [SECURITY.md][security-link].
 
 ## Deploy
 
@@ -94,29 +80,22 @@ The [CodeQL][codeql-link] workflow runs on push/PR to `main` and weekly. To see 
 - **Nginx** — static files (gzip, caching).
 - **cloudflared** — [Cloudflare Tunnel][cloudflare-link] to expose the site without opening ports.
 
-## License
-
-This project is licensed under the [MIT License][license-link]. You may use, copy, modify, and distribute the software, provided you include the license and copyright notice. See the [LICENSE][license-link] file for the full text.
-
 [actionlint-link]: https://github.com/rhysd/actionlint
-[ci-badge]: https://img.shields.io/github/actions/workflow/status/bknox83/knoxstringing-website/ci.yml?branch=main&label=CI
+[ci-badge]: https://img.shields.io/github/actions/workflow/status/bknox83/knoxstringing-website/ci.yml?branch=main&label=CI&style=for-the-badge
 [ci-link]: https://github.com/bknox83/knoxstringing-website/actions
 [cloudflare-link]: https://developers.cloudflare.com/cloudflare-one/connections/connect-apps/
 [codeql-link]: https://github.com/bknox83/knoxstringing-website/blob/main/.github/workflows/codeql.yml
-[commits-badge]: https://img.shields.io/github/last-commit/bknox83/knoxstringing-website
+[commits-badge]: https://img.shields.io/github/last-commit/bknox83/knoxstringing-website?style=for-the-badge
 [commits-link]: https://github.com/bknox83/knoxstringing-website/commits/main
-[conduct-link]: CODE_OF_CONDUCT.md
 [dependabot-link]: https://docs.github.com/en/code-security/dependabot
 [fonts-link]: https://fonts.google.com
 [formspree-link]: https://formspree.io
-[issue-link]: https://github.com/bknox83/knoxstringing-website/issues/new
-[license-badge]: https://img.shields.io/github/license/bknox83/knoxstringing-website
+[license-badge]: https://img.shields.io/github/license/bknox83/knoxstringing-website?style=for-the-badge
 [license-link]: LICENSE
 [lighthouse-link]: https://github.com/GoogleChrome/lighthouse-ci
 [lychee-link]: https://github.com/lycheeverse/lychee
 [pa11y-link]: https://pa11y.org
-[release-badge]: https://img.shields.io/github/v/release/bknox83/knoxstringing-website
+[release-badge]: https://img.shields.io/github/v/release/bknox83/knoxstringing-website?style=for-the-badge
 [release-link]: https://github.com/bknox83/knoxstringing-website/releases
-[security-link]: SECURITY.md
-[website-badge]: https://img.shields.io/website?url=https%3A%2F%2Fknoxstringing.com&label=site
+[website-badge]: https://img.shields.io/website?url=https%3A%2F%2Fknoxstringing.com&label=site&style=for-the-badge
 [website-link]: https://knoxstringing.com
