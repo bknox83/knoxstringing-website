@@ -27,7 +27,7 @@ This is a static website for a professional racquet stringing business in centra
 The site runs with **Docker Compose**
 
 - **Website** — NGINX serves static files from `./html`
-- **Tunnel** — A Cloudflare Tunnel exposes the service.
+- **Tunnel** — a Cloudflare Tunnel exposes the service.
 
 Getting new code onto the server: On every push to `main`, a deploy job runs on a self-hosted runner on the server. It executes `scripts/pull-deploy.sh`, which pulls from GitHub.
 
