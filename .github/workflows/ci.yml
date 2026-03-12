@@ -19,6 +19,9 @@ jobs:
         with:
           fetch-depth: 20
 
+      - name: Lint workflows
+        uses: rhysd/actionlint-action@v1
+
       - name: HTML validation (W3C Nu)
         run: |
           docker run --rm -v "$PWD:/data" ghcr.io/validator/validator:latest vnu --skip-non-html /data/index.html
@@ -48,6 +51,11 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: "22"
+
+      - name: Lockfile check
+        run: |
+          npm install --package-lock-only
+          git diff --exit-code package-lock.json || (echo "::error::package-lock.json is out of sync with package.json; run 'npm install' and commit the updated lockfile"; exit 1)
 
       - name: Install dependencies and build
         run: |
