@@ -15,11 +15,11 @@ This project serves **minified** CSS and JS (`styles.min.css`, `script.min.js`).
    npm run build
    ```
 
-2. **Bump the version in `index.html`** so browsers fetch the new file instead of using cache. Update the `?v=` value for the asset(s) you changed:
-   - **CSS changes** → update `v=...` on both the preload and the stylesheet link for `styles.min.css` (use the same new value for both).
-   - **JS changes** → update `v=...` on the script tag for `script.min.js`.
+2. **Bump the version in `index.html`** so browsers fetch the new file instead of using cache. **Keep CSS and JS in sync:** whenever you change either asset, update **all** `?v=` values to the **same** new version:
+   - **CSS changes** → update `v=...` on both the preload and the stylesheet link for `styles.min.css`, **and** update `v=...` on the script tag for `script.min.js` to the same value.
+   - **JS changes** → update `v=...` on the script tag for `script.min.js`, **and** update `v=...` on both the preload and the stylesheet link for `styles.min.css` to the same value.
 
-   Use a new value each time (e.g. increment patch: `2.0.0` → `2.0.1`, or use semver that makes sense).
+   Use a new value each time (e.g. increment patch: `2.0.1` → `2.0.2`), and use that **single version** for both CSS and JS so they stay in sync.
 
 **Files that require build + version bump:**
 - `assets/css/styles.css` → build, then bump CSS version in index.html
