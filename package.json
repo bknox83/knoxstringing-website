@@ -1,6 +1,8 @@
 {
   "name": "knox-stringing",
   "private": true,
+  "repository": "github:bknox83/knoxstringing-website",
+  "homepage": "https://knoxstringing.com",
   "scripts": {
     "build": "npm run minify:css && npm run minify:js",
     "minify:css": "cleancss -o assets/css/styles.min.css assets/css/styles.css",

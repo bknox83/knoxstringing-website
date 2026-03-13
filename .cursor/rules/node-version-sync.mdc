@@ -1,0 +1,16 @@
+---
+description: Keep local Node pin in sync when CI Node version changes
+globs: .github/workflows/*.yml
+alwaysApply: false
+---
+
+# Node version sync with CI
+
+This project pins the Node version for local dev in **`.nvmrc`** and **`.node-version`** so `nvm use` / `fnm use` match CI.
+
+**When you change the Node version in any workflow** (e.g. `node-version:` in `.github/workflows/ci.yml` or `actions/setup-node`):
+
+1. Update **`.nvmrc`** to the same version (e.g. `22` or `20`).
+2. Update **`.node-version`** to the same value.
+
+Use the same format in both files (e.g. `22` for current LTS major, or `22.0.0` for an exact version). This keeps local dev and CI aligned.
