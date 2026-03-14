@@ -1,6 +1,6 @@
 ---
-description: Run npm run build and bump asset versions in index.html after editing CSS or JS
-globs: assets/css/**/*.css, assets/js/**/*.js
+description: Run npm run build and bump asset versions in site/index.html after editing CSS or JS
+globs: site/assets/css/**/*.css, site/assets/js/**/*.js
 alwaysApply: false
 ---
 
@@ -15,12 +15,12 @@ This project serves **minified** CSS and JS (`styles.min.css`, `script.min.js`).
    npm run build
    ```
 
-2. **Bump the version in `index.html`** so browsers fetch the new file instead of using cache. **Keep CSS and JS in sync:** whenever you change either asset, update **all** `?v=` values to the **same** new version:
+2. **Bump the version in `site/index.html`** so browsers fetch the new file instead of using cache. **Keep CSS and JS in sync:** whenever you change either asset, update **all** `?v=` values to the **same** new version:
    - **CSS changes** → update `v=...` on both the preload and the stylesheet link for `styles.min.css`, **and** update `v=...` on the script tag for `script.min.js` to the same value.
    - **JS changes** → update `v=...` on the script tag for `script.min.js`, **and** update `v=...` on both the preload and the stylesheet link for `styles.min.css` to the same value.
 
    Use a new value each time (e.g. increment patch: `2.0.1` → `2.0.2`), and use that **single version** for both CSS and JS so they stay in sync.
 
 **Files that require build + version bump:**
-- `assets/css/styles.css` → build, then bump CSS version in index.html
-- `assets/js/script.js` → build, then bump JS version in index.html
+- `site/assets/css/styles.css` → build, then bump CSS version in site/index.html
+- `site/assets/js/script.js` → build, then bump JS version in site/index.html

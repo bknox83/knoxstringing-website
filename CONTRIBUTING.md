@@ -12,7 +12,7 @@ Thanks for your interest in contributing to Knox Racquet Stringing.
 
 1. Clone the repo.
 2. Run `npm install` and `npm run build`.
-3. Open `index.html` in a browser or use a local server (e.g. `npx serve .`) to preview.
+3. Open `site/index.html` in a browser or use a local server (e.g. `npx serve site`) to preview.
 
 The project is plain HTML, CSS, and JavaScript with no framework.
 

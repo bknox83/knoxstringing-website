@@ -17,13 +17,4 @@ if [ -f package.json ]; then
   (npm ci 2>/dev/null || npm install) && npm run build
 fi
 
-rsync -a --delete \
-  --exclude '.git' \
-  --exclude '.github' \
-  --exclude 'compose.yaml' \
-  --exclude 'nginx.conf' \
-  --exclude 'README.md' \
-  --exclude '.gitignore' \
-  --exclude 'docs' \
-  --exclude 'scripts' \
-  "$REPO_DIR/" "$HTML_DIR/"
+rsync -a --delete "$REPO_DIR/site/" "$HTML_DIR/"

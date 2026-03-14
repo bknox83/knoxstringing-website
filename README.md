@@ -1,6 +1,6 @@
 <div align="center">
  
-  <a href="https://knoxstringing.com"><img src="assets/images/knox-logo.png" alt="Knox Racquet Stringing" width="200" /></a>
+  <a href="https://knoxstringing.com"><img src="site/assets/images/knox-logo.png" alt="Knox Racquet Stringing" width="200" /></a>
   <h3>Knox Racquet Stringing</h3>
 
   Professional tennis and racquetball stringing in Waukee, Des Moines, and the greater central Iowa area.
@@ -20,7 +20,7 @@
 
 ## Overview
 
-This is a static website for a professional racquet stringing business in central Iowa. The site is plain HTML, CSS, and JavaScript (no frameworks). Contact form submissions are handled by [Formspree][formspree-link]. There is no backend in this repo.
+This is a static website for a professional racquet stringing business in central Iowa. The site is plain HTML, CSS, and JavaScript (no frameworks). All web content (HTML, assets, robots.txt, sitemap) lives in the **`site/`** directory. Contact form submissions are handled by [Formspree][formspree-link]. There is no backend in this repo.
 
 ## Status
 

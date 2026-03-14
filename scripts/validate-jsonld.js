@@ -7,7 +7,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const htmlPath = path.join(__dirname, '..', 'index.html');
+const htmlPath = path.join(__dirname, '..', 'site', 'index.html');
 const html = fs.readFileSync(htmlPath, 'utf8');
 
 const match = html.match(/<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/i);

@@ -24,7 +24,7 @@ jobs:
 
       - name: HTML validation (W3C Nu)
         run: |
-          docker run --rm -v "$PWD:/data" ghcr.io/validator/validator:latest vnu --skip-non-html /data/index.html
+          docker run --rm -v "$PWD:/data" ghcr.io/validator/validator:latest vnu --skip-non-html /data/site/index.html
 
       - name: JSON-LD LocalBusiness schema validation
         run: node scripts/validate-jsonld.js
@@ -34,7 +34,7 @@ jobs:
           python3 -c "
           import xml.etree.ElementTree as ET
           try:
-              t = ET.parse('sitemap.xml')
+              t = ET.parse('site/sitemap.xml')
               r = t.getroot()
               ns = 'http://www.sitemaps.org/schemas/sitemap/0.9'
               locs = r.findall('.//{%s}loc' % ns)
@@ -79,7 +79,7 @@ jobs:
           CHROME_PATH: ${{ steps.chrome.outputs.chrome-path }}
           CHROME_FLAGS: --no-sandbox --disable-setuid-sandbox --disable-dev-shm-usage --disable-gpu
         run: |
-          serve . -l 3000 &
+          serve site -l 3000 &
           SERVE_PID=$!
           npx wait-on http://localhost:3000 --timeout 15000
 
@@ -92,7 +92,7 @@ jobs:
           ./lychee http://localhost:3000 --no-progress --exclude '^tel:' --exclude '^#' --exclude 'formspree\.io'
 
           # Sitemap URLs: assert all return 200 when served locally
-          sed -n 's|.*<loc>\([^<]*\)</loc>.*|\1|p' sitemap.xml | sed 's|https://knoxstringing.com|http://localhost:3000|g' | ./lychee --no-progress -
+          sed -n 's|.*<loc>\([^<]*\)</loc>.*|\1|p' site/sitemap.xml | sed 's|https://knoxstringing.com|http://localhost:3000|g' | ./lychee --no-progress -
 
           # Smoke test
           code=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000)
