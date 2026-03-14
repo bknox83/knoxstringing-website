@@ -1,13 +1,10 @@
-# CodeQL security analysis (JavaScript)
+# CodeQL security analysis (JavaScript) - weekly only.
+# On push/PR, CodeQL runs in the CI workflow so deploy can wait for it.
 # https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors
 
-name: 🔒 CodeQL
+name: 🔒 CodeQL (weekly)
 
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
   schedule:
     - cron: "0 0 * * 1"  # Weekly on Monday 00:00 UTC
 
