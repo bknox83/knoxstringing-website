@@ -22,6 +22,10 @@
 
 This is a static website for a professional racquet stringing business in central Iowa. The site is plain HTML, CSS, and JavaScript (no frameworks). Contact form submissions are handled by [Formspree][formspree-link]. There is no backend in this repo.
 
+## Status
+
+Current uptime and service status for the website and related services: **[status.knoxstringing.com][status-link]**.
+
 ## Deploy
 
 The site runs with **Docker Compose**
@@ -38,6 +42,7 @@ Getting new code onto the server: On every push to `main`, a deploy job runs on 
 [license-link]:     https://github.com/bknox83/knoxstringing-website/blob/main/LICENSE
 [linkcheck-link]:   https://github.com/bknox83/knoxstringing-website/actions/workflows/production-link-check.yml
 [release-link]:     https://github.com/bknox83/knoxstringing-website/releases/latest
+[status-link]:      https://status.knoxstringing.com
 [website-link]:     https://knoxstringing.com
 
 [ci-badge]:         https://img.shields.io/github/actions/workflow/status/bknox83/knoxstringing-website/ci.yml?branch=main&label=CI&style=for-the-badge
