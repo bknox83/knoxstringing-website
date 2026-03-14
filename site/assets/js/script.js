@@ -4,22 +4,69 @@
   function init() {
     var toggle = document.querySelector('.nav-toggle');
     var nav = document.querySelector('.nav');
+    var navLinks = nav ? nav.querySelectorAll('a[href^="#"]') : [];
+
     function closeMenu() {
       if (nav && nav.classList.contains('is-open')) {
         nav.classList.remove('is-open');
-        if (toggle) toggle.setAttribute('aria-label', 'Open menu');
+        if (toggle) {
+          toggle.setAttribute('aria-label', 'Open menu');
+          toggle.focus();
+        }
       }
     }
+
+    function getMenuFocusables() {
+      var list = [];
+      if (toggle) list.push(toggle);
+      for (var i = 0; i < navLinks.length; i++) list.push(navLinks[i]);
+      return list;
+    }
+
+    function handleMenuKeydown(e) {
+      if (!nav || !nav.classList.contains('is-open')) return;
+      var focusables = getMenuFocusables();
+      if (focusables.length === 0) return;
+
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        closeMenu();
+        return;
+      }
+
+      if (e.key !== 'Tab') return;
+      var current = document.activeElement;
+      var idx = focusables.indexOf(current);
+      if (idx === -1) return;
+
+      if (e.shiftKey) {
+        if (idx === 0) {
+          e.preventDefault();
+          focusables[focusables.length - 1].focus();
+        }
+      } else {
+        if (idx === focusables.length - 1) {
+          e.preventDefault();
+          focusables[0].focus();
+        }
+      }
+    }
+
     if (toggle && nav) {
       toggle.addEventListener('click', function () {
+        var opening = !nav.classList.contains('is-open');
         nav.classList.toggle('is-open');
         toggle.setAttribute('aria-label', nav.classList.contains('is-open') ? 'Close menu' : 'Open menu');
+        if (opening && navLinks.length > 0) {
+          requestAnimationFrame(function () { navLinks[0].focus(); });
+        }
       });
       nav.addEventListener('click', function (e) {
         if (e.target.closest('a[href^="#"]') && nav.classList.contains('is-open')) {
           requestAnimationFrame(function () { closeMenu(); });
         }
       });
+      document.addEventListener('keydown', handleMenuKeydown);
       window.addEventListener('hashchange', function () {
         closeMenu();
       });
