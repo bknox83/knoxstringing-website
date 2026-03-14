@@ -29,6 +29,9 @@ jobs:
       - name: JSON-LD LocalBusiness schema validation
         run: node scripts/validate-jsonld.js
 
+      - name: Generate sitemap
+        run: bash scripts/generate-sitemap.sh
+
       - name: Sitemap validation
         run: |
           python3 -c "
@@ -86,13 +89,11 @@ jobs:
           # Lighthouse CI (server already up; no startServerCommand in lighthouserc.js)
           lhci autorun
 
-          # Lychee link checker
-          curl -sSfL "https://github.com/lycheeverse/lychee/releases/download/lychee-v0.23.0/lychee-x86_64-unknown-linux-gnu.tar.gz" | tar xz
-          chmod +x lychee
-          ./lychee http://localhost:3000 --no-progress --exclude '^tel:' --exclude '^#' --exclude 'formspree\.io'
+          # Lychee link checker (version in scripts/lychee-check.sh)
+          bash scripts/lychee-check.sh http://localhost:3000
 
           # Sitemap URLs: assert all return 200 when served locally
-          sed -n 's|.*<loc>\([^<]*\)</loc>.*|\1|p' site/sitemap.xml | sed 's|https://knoxstringing.com|http://localhost:3000|g' | ./lychee --no-progress -
+          sed -n 's|.*<loc>\([^<]*\)</loc>.*|\1|p' site/sitemap.xml | sed 's|https://knoxstringing.com|http://localhost:3000|g' | bash scripts/lychee-check.sh --stdin
 
           # Smoke test
           code=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000)

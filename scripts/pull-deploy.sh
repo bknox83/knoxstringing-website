@@ -17,6 +17,8 @@ if [ -f package.json ]; then
   (npm ci 2>/dev/null || npm install) && npm run build
 fi
 
+bash "$REPO_DIR/scripts/generate-sitemap.sh"
+
 # Guard: never wipe html if site/ is missing or has no index (e.g. bad pull)
 if [ ! -f "$REPO_DIR/site/index.html" ]; then
   echo "ERROR: $REPO_DIR/site/index.html not found; refusing to rsync (would wipe html)."
