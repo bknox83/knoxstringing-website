@@ -17,4 +17,13 @@ if [ -f package.json ]; then
   (npm ci 2>/dev/null || npm install) && npm run build
 fi
 
+# Guard: never wipe html if site/ is missing or has no index (e.g. bad pull)
+if [ ! -f "$REPO_DIR/site/index.html" ]; then
+  echo "ERROR: $REPO_DIR/site/index.html not found; refusing to rsync (would wipe html)."
+  exit 1
+fi
+
 rsync -a --delete "$REPO_DIR/site/" "$HTML_DIR/"
+
+# Ensure nginx (often running as nobody/nginx in container) can read everything
+chmod -R a+rX "$HTML_DIR"
