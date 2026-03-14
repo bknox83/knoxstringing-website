@@ -1,26 +1,19 @@
 ---
-description: Run npm run build and bump asset versions in site/index.html after editing CSS or JS
+description: Bump cache-busting ?v= in site/index.html when editing CSS or JS; keep CSS and JS version in sync
 globs: site/assets/css/**/*.css, site/assets/js/**/*.js
-alwaysApply: false
+alwaysApply: true
 ---
 
-# Build and version bump after CSS/JS changes
+# Version bump after CSS/JS changes (required)
 
-This project serves **minified** CSS and JS (`styles.min.css`, `script.min.js`). The HTML references them with a cache-busting query parameter (`?v=...`).
+**When you edit any CSS or JS in this project, you MUST update the cache-busting version in `site/index.html` and keep CSS and JS in sync.**
 
-**After editing any of these files:**
+In `site/index.html`, update **every** `?v=...` to the **same** new value (e.g. `2.0.1` → `2.0.2`):
 
-1. **Run the build:**
-   ```bash
-   npm run build
-   ```
+- Preload for `styles.min.css`
+- Stylesheet `href` for `styles.min.css`
+- Script `src` for `script.min.js`
 
-2. **Bump the version in `site/index.html`** so browsers fetch the new file instead of using cache. **Keep CSS and JS in sync:** whenever you change either asset, update **all** `?v=` values to the **same** new version:
-   - **CSS changes** → update `v=...` on both the preload and the stylesheet link for `styles.min.css`, **and** update `v=...` on the script tag for `script.min.js` to the same value.
-   - **JS changes** → update `v=...` on the script tag for `script.min.js`, **and** update `v=...` on both the preload and the stylesheet link for `styles.min.css` to the same value.
+Use one version for both assets. Whether you changed only CSS or only JS, bump all three to the same new value so they stay in sync. Increment each time (e.g. patch: `2.0.2` → `2.0.3`).
 
-   Use a new value each time (e.g. increment patch: `2.0.1` → `2.0.2`), and use that **single version** for both CSS and JS so they stay in sync.
-
-**Files that require build + version bump:**
-- `site/assets/css/styles.css` → build, then bump CSS version in site/index.html
-- `site/assets/js/script.js` → build, then bump JS version in site/index.html
+Minification is handled by the backend (CI/deploy); do not run `npm run build` in this workflow.

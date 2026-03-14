@@ -110,6 +110,9 @@ jobs:
     needs: check
     runs-on: self-hosted
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    concurrency:
+      group: knox-deploy
+      cancel-in-progress: false
     steps:
       - name: Pull and deploy
         run: bash ~/Docker/KnoxStringing/repo/scripts/pull-deploy.sh

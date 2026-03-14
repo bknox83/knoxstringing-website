@@ -3,6 +3,9 @@
   "private": true,
   "repository": "github:bknox83/knoxstringing-website",
   "homepage": "https://knoxstringing.com",
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
     "build": "npm run minify:css && npm run minify:js",
     "minify:css": "cleancss -o site/assets/css/styles.min.css site/assets/css/styles.css",
