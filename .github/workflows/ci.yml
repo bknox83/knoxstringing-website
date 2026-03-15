@@ -1,5 +1,5 @@
 # CI: link check (lychee), HTML validation (W3C Nu), smoke test, accessibility (pa11y).
-# Deploy runs in a separate workflow (deploy.yml) after both CI and CodeQL succeed.
+# Deploy runs only on push to main (merge), after site-checks pass.
 name: ✅ CI
 
 on:
@@ -106,3 +106,15 @@ jobs:
           pa11y http://localhost:3000 --threshold 0 --config pa11y.json
 
           kill $SERVE_PID 2>/dev/null || true
+
+  deploy:
+    name: Deploy to Server
+    runs-on: self-hosted
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [check]
+    concurrency:
+      group: knox-deploy
+      cancel-in-progress: false
+    steps:
+      - name: Pull and deploy
+        run: bash ~/Docker/KnoxStringing/repo/scripts/pull-deploy.sh
