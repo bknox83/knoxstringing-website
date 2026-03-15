@@ -1,7 +1,7 @@
 # Enable auto-merge on Dependabot PRs so they merge when CI passes.
 # Requires: Repo Settings → General → Pull Requests → "Allow auto-merge" enabled.
 
-name: 🤖 Dependabot auto-merge
+name: 🤖 Dependabot Auto-Merge
 
 on:
   pull_request:

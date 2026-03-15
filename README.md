@@ -8,7 +8,7 @@
   <br>
 
   [![CI][ci-badge]][ci-link]
-  [![Link-Check][linkcheck-badge]][linkcheck-link]
+  [![Prod Link Checks][linkcheck-badge]][linkcheck-link]
   [![License][license-badge]][license-link]
   <br>
   [![Release][release-badge]][release-link]
@@ -19,7 +19,7 @@
 
 ## Overview
 
-This is a static website for a professional racquet stringing business in central Iowa. The site is plain HTML, CSS, and JavaScript (no frameworks). All web content (HTML, assets, robots.txt, sitemap) lives in the **`site/`** directory. Contact form submissions are handled by [Formspree][formspree-link]. There is no backend in this repo.
+This is a static website for a professional racquet stringing business in central Iowa. The site is plain HTML, CSS, and JavaScript (no frameworks). All web content (HTML, assets, robots.txt, sitemap) lives in the `site/` directory. Contact form submissions are handled by [Formspree][formspree-link]. There is no backend in this repo.
 
 Current uptime and service status for the website and related services: [status.knoxstringing.com][status-link]
 
@@ -43,6 +43,6 @@ During deployment the script minifies javascript/css files and dynamically gener
 [ci-badge]:         https://img.shields.io/github/actions/workflow/status/bknox83/knoxstringing-website/ci.yml?branch=main&label=CI&style=for-the-badge
 [commits-badge]:    https://img.shields.io/github/commits-since/bknox83/knoxstringing-website/latest?style=for-the-badge
 [license-badge]:    https://img.shields.io/github/license/bknox83/knoxstringing-website?style=for-the-badge&color=orange
-[linkcheck-badge]:  https://img.shields.io/github/actions/workflow/status/bknox83/knoxstringing-website/production-link-check.yml?branch=main&label=Link-Check&style=for-the-badge
+[linkcheck-badge]:  https://img.shields.io/github/actions/workflow/status/bknox83/knoxstringing-website/production-link-check.yml?branch=main&label=Prod%20Link%20Checks&style=for-the-badge
 [release-badge]:    https://img.shields.io/github/v/release/bknox83/knoxstringing-website?style=for-the-badge
 [website-badge]:    https://img.shields.io/website?url=https%3A%2F%2Fknoxstringing.com&label=website&style=for-the-badge
