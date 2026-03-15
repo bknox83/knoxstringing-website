@@ -132,6 +132,17 @@ jobs:
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v4
 
+  prod-link-check:
+    name: prod-link-check
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Lychee link check (production)
+        run: bash scripts/lychee-check.sh https://knoxstringing.com --exclude 'cdn-cgi/l/email-protection'
+
   deploy:
     name: deploy-to-server
     runs-on: self-hosted
