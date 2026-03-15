@@ -8,6 +8,7 @@ name: 🔒 CodeQL (weekly)
 on:
   schedule:
     - cron: "0 0 * * 1"  # Monday 00:00 UTC
+  workflow_dispatch:
 
 jobs:
   analyze:
