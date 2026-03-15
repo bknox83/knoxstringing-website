@@ -11,7 +11,6 @@
   [![Link-Check][linkcheck-badge]][linkcheck-link]
   [![License][license-badge]][license-link]
   <br>
-
   [![Release][release-badge]][release-link]
   [![Commits][commits-badge]][commits-link]
   [![Website][website-badge]][website-link]
@@ -26,14 +25,11 @@ Current uptime and service status for the website and related services: [status.
 
 ## Deployment
 
-The site runs with Docker Compose.
+The site runs with Docker Compose. NGINX serves static files and a Cloudflare tunnel exposes the service.
 
-- NGINX serves static files from `./html`
-- A Cloudflare tunnel exposes the service
+Code is automatically deployed whenever changes are pushed to the `main` branch. The `deploy-to-server` job runs after all other CI on a self-hosted runner located on the server. The job executes `scripts/pull-deploy.sh`, which pulls the latest changes from GitHub.
 
-Code is automatically deployed whenever changes are pushed to the `main` branch. A GitHub Actions workflow runs the deploy-to-server job on a self-hosted runner located on the server. The job executes `scripts/pull-deploy.sh`, which pulls the latest changes from GitHub.
-
-During deployment the script also minifies javaScript and css as well as dynamically generates `sitemap.xml`. This keeps the productions server synchronized with `main` and ensures assets are optimized before being served by NGINX.
+During deployment the script minifies javaScript/css files and dynamically generates `sitemap.xml`. This keeps the production server synchronized with `main` and ensures assets are optimized before being served by NGINX.
 
 [ci-link]:          https://github.com/bknox83/knoxstringing-website/actions/workflows/ci.yml
 [commits-link]:     https://github.com/bknox83/knoxstringing-website/commits/main
