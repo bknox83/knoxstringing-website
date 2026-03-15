@@ -2,7 +2,7 @@
  
   <a href="https://knoxstringing.com"><img src="site/assets/images/knox-logo.png" alt="Knox Racquet Stringing" width="200" /></a>
   <h3>Knox Racquet Stringing</h3>
-
+  <br>
   Professional tennis and racquetball stringing in Waukee, Des Moines, and the greater central Iowa area.
   <br>
   <br>
@@ -24,12 +24,12 @@ Current uptime and service status for the website and related services: [status.
 
 ## Deploy
 
-The site runs with **Docker Compose**
+The site runs with **Docker Compose**.
 
 - NGINX serves static files from `./html`
-- Cloudflare Tunnel exposes the service
+- Cloudflare tunnel exposes the service
 
-Getting new code onto the server: On every push to `main`, a deploy job runs on a self-hosted runner on the server. It executes `scripts/pull-deploy.sh`, which pulls from GitHub.
+Getting new code onto the server: On every push to `main`, the deploy-to-server job runs on a self-hosted runner on the server. It executes `scripts/pull-deploy.sh`, which pulls from GitHub.
 
 [ci-link]:          https://github.com/bknox83/knoxstringing-website/actions/workflows/ci.yml
 [commits-link]:     https://github.com/bknox83/knoxstringing-website/commits/main
