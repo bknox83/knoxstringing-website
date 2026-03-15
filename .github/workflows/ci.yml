@@ -1,6 +1,8 @@
-# CI: link check (lychee), HTML validation (W3C Nu), smoke test, accessibility (pa11y).
-# CodeQL runs on push/PR and weekly (schedule); on schedule only CodeQL runs.
-# Deploy runs only on push to main (merge), after site-checks and CodeQL pass.
+# CI: site-checks, codeql, deploy-to-server, prod-link-check.
+# When each job runs:
+#   push to main:  site-checks, codeql, and deploy-to-server (runs after site-checks and codeql pass)
+#   pull_request:  site-checks and codeql
+#   schedule (Mon 00:00 UTC):  codeql and prod-link-check
 name: ✅ CI
 
 on:
@@ -143,7 +145,7 @@ jobs:
       - name: Lychee link check (production)
         run: bash scripts/lychee-check.sh https://knoxstringing.com --exclude 'cdn-cgi/l/email-protection'
 
-  deploy:
+  deploy-to-server:
     name: deploy-to-server
     runs-on: self-hosted
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'

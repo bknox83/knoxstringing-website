@@ -28,16 +28,6 @@ Code is automatically deployed whenever changes are pushed to the `main` branch.
 
 During deployment the script minifies javascript/css files and dynamically generates `sitemap.xml`. This keeps the production server synchronized with `main` and ensures assets are optimized before being served by NGINX.
 
-<div align="center">
-
-|     Trigger     | site-checks | codeql | deploy-to-server | prod-link-check |
-|-----------------|:-----------:|:------:|:----------------:|:---------------:|
-| Push to Main    |     ✅     |   ✅   |        ✅        |       ❌       |
-| Pull Request    |     ✅     |   ✅   |        ❌        |       ❌       |
-| Schedule (Mon)  |     ❌     |   ✅   |        ❌        |       ✅       |
-
-</div>
-
 [ci-link]:        https://github.com/bknox83/knoxstringing-website/actions/workflows/ci.yml
 [commits-link]:   https://github.com/bknox83/knoxstringing-website/commits/main
 [formspree-link]: https://formspree.io
