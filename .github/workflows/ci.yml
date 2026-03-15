@@ -1,8 +1,8 @@
-# CI: site-checks, codeql, deploy-to-server, prod-link-check.
+# CI: site-checks, codeql, prod-link-check, and deploy-to-server
 # When each job runs:
-#   push to main:  site-checks, codeql, and deploy-to-server (runs after site-checks and codeql pass)
-#   pull_request:  site-checks and codeql
-#   schedule (Mon 00:00 UTC):  codeql and prod-link-check
+#   push to main: site-checks, codeql, and deploy-to-server (runs after site-checks and codeql pass)
+#   pull_request: site-checks and codeql
+#   schedule (Mon 00:00 UTC): codeql and prod-link-check
 name: ✅ CI
 
 on:
