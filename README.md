@@ -29,14 +29,14 @@ Code is automatically deployed whenever changes are pushed to the `main` branch.
 
 During deployment the script minifies javascript/css files and dynamically generates `sitemap.xml`. This keeps the production server synchronized with `main` and ensures assets are optimized before being served by NGINX.
 
-[ci-link]:          https://github.com/bknox83/knoxstringing-website/actions/workflows/ci.yml
-[commits-link]:     https://github.com/bknox83/knoxstringing-website/commits/main
-[formspree-link]:   https://formspree.io
-[release-link]:     https://github.com/bknox83/knoxstringing-website/releases/latest
-[status-link]:      https://status.knoxstringing.com
-[website-link]:     https://knoxstringing.com
+[ci-link]:        https://github.com/bknox83/knoxstringing-website/actions/workflows/ci.yml
+[commits-link]:   https://github.com/bknox83/knoxstringing-website/commits/main
+[formspree-link]: https://formspree.io
+[release-link]:   https://github.com/bknox83/knoxstringing-website/releases/latest
+[status-link]:    https://status.knoxstringing.com
+[website-link]:   https://knoxstringing.com
 
-[ci-badge]:         https://img.shields.io/github/actions/workflow/status/bknox83/knoxstringing-website/ci.yml?branch=main&label=CI&style=for-the-badge
-[commits-badge]:    https://img.shields.io/github/commits-since/bknox83/knoxstringing-website/latest?style=for-the-badge
-[release-badge]:    https://img.shields.io/github/v/release/bknox83/knoxstringing-website?style=for-the-badge
-[website-badge]:    https://img.shields.io/website?url=https%3A%2F%2Fknoxstringing.com&label=website&style=for-the-badge
+[ci-badge]:       https://img.shields.io/github/actions/workflow/status/bknox83/knoxstringing-website/ci.yml?branch=main&label=CI&style=for-the-badge
+[commits-badge]:  https://img.shields.io/github/commits-since/bknox83/knoxstringing-website/latest?style=for-the-badge
+[release-badge]:  https://img.shields.io/github/v/release/bknox83/knoxstringing-website?style=for-the-badge
+[website-badge]:  https://img.shields.io/website?url=https%3A%2F%2Fknoxstringing.com&label=website&style=for-the-badge
