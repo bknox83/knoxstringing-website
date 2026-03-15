@@ -2,7 +2,7 @@
 # Deploy (deploy.yml) runs after both this workflow and CI succeed.
 # https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors
 
-name: 🔒 CodeQL (weekly)
+name: 🔒 CodeQL
 
 on:
   push:

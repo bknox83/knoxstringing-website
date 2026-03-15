@@ -1,18 +1,20 @@
 # Deploy to server only after both CI (site-checks) and CodeQL have succeeded for the same commit.
 # Triggered when either workflow completes on main; deploys only when both have passed.
-name: deploy-to-server
+name: 🚀 Deploy to Server
 
 on:
   workflow_run:
-    workflows: ["✅ CI", "🔒 CodeQL (weekly)"]
+    workflows: ["✅ CI", "🔒 CodeQL"]
     types: completed
     branches: [main]
 
 jobs:
   deploy:
-    name: deploy-to-server
+    name: Deploy to Server
     runs-on: self-hosted
     if: github.event.workflow_run.conclusion == 'success'
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     permissions:
       actions: read
       contents: read
