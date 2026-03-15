@@ -25,7 +25,7 @@ Current uptime and service status for the website and related services: [status.
 
 The site runs with Docker Compose. NGINX serves static files and a Cloudflare tunnel exposes the service.
 
-Code is automatically deployed whenever changes are pushed to the `main` branch. The `Deploy to Server` workflow runs on a self-hosted runner only after both the  `CI` and  `CodeQL` workflows have succeeded for that commit. It executes `scripts/pull-deploy.sh`, which pulls the latest changes from GitHub.
+Code is automatically deployed whenever changes are pushed to the `main` branch. The `deploy-to-server` workflow runs on a self-hosted runner only after both the  `CI` and  `CodeQL` workflows have succeeded for that commit. It executes `scripts/pull-deploy.sh`, which pulls the latest changes from GitHub.
 
 During deployment the script minifies javascript/css files and dynamically generates `sitemap.xml`. This keeps the production server synchronized with `main` and ensures assets are optimized before being served by NGINX.
 

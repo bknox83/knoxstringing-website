@@ -108,7 +108,7 @@ jobs:
           kill $SERVE_PID 2>/dev/null || true
 
   deploy:
-    name: Deploy to Server
+    name: deploy-to-server
     runs-on: self-hosted
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: [check]
