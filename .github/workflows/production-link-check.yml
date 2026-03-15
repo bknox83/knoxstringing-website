@@ -1,6 +1,6 @@
 # Weekly link check against production (catches broken external links over time).
 # CI only checks links against localhost.
-name: 🔗 Prod Link Checks
+name: 🔗 Prod Link Checks (weekly)
 
 on:
   schedule:

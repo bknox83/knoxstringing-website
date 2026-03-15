@@ -8,12 +8,10 @@
   <br>
 
   [![CI][ci-badge]][ci-link]
-  [![Prod Link Checks][linkcheck-badge]][linkcheck-link]
-  [![License][license-badge]][license-link]
+  [![Website][website-badge]][website-link]
   <br>
   [![Release][release-badge]][release-link]
   [![Commits][commits-badge]][commits-link]
-  [![Website][website-badge]][website-link]
 
 </div>
 
@@ -34,14 +32,10 @@ During deployment the script minifies javascript/css files and dynamically gener
 [ci-link]:          https://github.com/bknox83/knoxstringing-website/actions/workflows/ci.yml
 [commits-link]:     https://github.com/bknox83/knoxstringing-website/commits/main
 [formspree-link]:   https://formspree.io
-[license-link]:     ./LICENSE
-[linkcheck-link]:   https://github.com/bknox83/knoxstringing-website/actions/workflows/production-link-check.yml
 [release-link]:     https://github.com/bknox83/knoxstringing-website/releases/latest
 [status-link]:      https://status.knoxstringing.com
 [website-link]:     https://knoxstringing.com
 [ci-badge]:         https://img.shields.io/github/actions/workflow/status/bknox83/knoxstringing-website/ci.yml?branch=main&label=CI&style=for-the-badge
 [commits-badge]:    https://img.shields.io/github/commits-since/bknox83/knoxstringing-website/latest?style=for-the-badge
-[license-badge]:    https://img.shields.io/github/license/bknox83/knoxstringing-website?style=for-the-badge&color=orange
-[linkcheck-badge]:  https://img.shields.io/github/actions/workflow/status/bknox83/knoxstringing-website/production-link-check.yml?branch=main&label=Prod%20Link%20Checks&style=for-the-badge
 [release-badge]:    https://img.shields.io/github/v/release/bknox83/knoxstringing-website?style=for-the-badge
 [website-badge]:    https://img.shields.io/website?url=https%3A%2F%2Fknoxstringing.com&label=website&style=for-the-badge
