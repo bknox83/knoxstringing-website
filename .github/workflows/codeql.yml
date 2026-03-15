@@ -1,11 +1,14 @@
-# CodeQL security analysis (JavaScript) - weekly only.
-# On push/PR, CodeQL runs in the CI workflow so deploy can wait for it.
-# This file exists so GitHub Code Scanning finds the config; only runs on schedule.
+# CodeQL security analysis (JavaScript). Runs on push/PR and weekly.
+# Deploy (deploy.yml) runs after both this workflow and CI succeed.
 # https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors
 
 name: 🔒 CodeQL (weekly)
 
 on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
   schedule:
     - cron: "0 0 * * 1"  # Monday 00:00 UTC
   workflow_dispatch:

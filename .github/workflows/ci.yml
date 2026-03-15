@@ -1,5 +1,5 @@
 # CI: link check (lychee), HTML validation (W3C Nu), smoke test, accessibility (pa11y).
-# Deploy: on push to main (after CI passes), runs on self-hosted runner and executes scripts/pull-deploy.sh.
+# Deploy runs in a separate workflow (deploy.yml) after both CI and CodeQL succeed.
 name: ✅ CI
 
 on:
@@ -106,34 +106,3 @@ jobs:
           pa11y http://localhost:3000 --threshold 0 --config pa11y.json
 
           kill $SERVE_PID 2>/dev/null || true
-
-  codeql:
-    name: CodeQL
-    runs-on: ubuntu-latest
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-    permissions:
-      security-events: write
-      actions: read
-      contents: read
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v4
-        with:
-          languages: javascript
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v4
-
-  deploy:
-    name: deploy-to-server
-    needs: [check, codeql]
-    runs-on: self-hosted
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    concurrency:
-      group: knox-deploy
-      cancel-in-progress: false
-    steps:
-      - name: Pull and deploy
-        run: bash ~/Docker/KnoxStringing/repo/scripts/pull-deploy.sh
