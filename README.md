@@ -39,7 +39,6 @@ During deployment the script minifies javascript/css files and dynamically gener
 [release-link]:     https://github.com/bknox83/knoxstringing-website/releases/latest
 [status-link]:      https://status.knoxstringing.com
 [website-link]:     https://knoxstringing.com
-
 [ci-badge]:         https://img.shields.io/github/actions/workflow/status/bknox83/knoxstringing-website/ci.yml?branch=main&label=CI&style=for-the-badge
 [commits-badge]:    https://img.shields.io/github/commits-since/bknox83/knoxstringing-website/latest?style=for-the-badge
 [license-badge]:    https://img.shields.io/github/license/bknox83/knoxstringing-website?style=for-the-badge&color=orange
