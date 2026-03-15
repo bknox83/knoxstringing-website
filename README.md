@@ -26,11 +26,11 @@ The site runs with Docker Compose. NGINX serves static files and a Cloudflare tu
 
 Code is automatically deployed whenever changes are pushed to the `main` branch. The `deploy-to-server` job runs on a self-hosted runner at the end of the `CI` workflow. It executes `scripts/pull-deploy.sh`, which pulls the latest changes from GitHub. During deployment the script minifies javascript/css files and dynamically generates `sitemap.xml`. This keeps the production server synchronized with `main` and ensures assets are optimized before being served by NGINX.
 
-|     Trigger     | site-checks | codeql | deploy | prod-link-check |
-|:---------------:|:-----------:|:------:|:------:|:---------------:|
-| Push to Main    |     ✅     |   ✅   |   ✅   |       ❌       |
-| Pull Request    |     ✅     |   ✅   |   ❌   |       ❌       |
-| Schedule (Mon)  |     ❌     |   ✅   |   ❌   |       ✅       |
+|     Trigger     | site-checks | codeql | deploy-to-server | prod-link-check |
+|:---------------:|:-----------:|:------:|:----------------:|:---------------:|
+| Push to Main    |     ✅     |   ✅   |        ✅        |       ❌       |
+| Pull Request    |     ✅     |   ✅   |        ❌        |       ❌       |
+| Schedule (Mon)  |     ❌     |   ✅   |        ❌        |       ✅       |
 
 [ci-link]:        https://github.com/bknox83/knoxstringing-website/actions/workflows/ci.yml
 [commits-link]:   https://github.com/bknox83/knoxstringing-website/commits/main
