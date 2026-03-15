@@ -2,14 +2,16 @@
  
   <a href="https://knoxstringing.com"><img src="site/assets/images/knox-logo.png" alt="Knox Racquet Stringing" width="200" /></a>
   <h3>Knox Racquet Stringing</h3>
-  <br>
+
   Professional tennis and racquetball stringing in Waukee, Des Moines, and the greater central Iowa area.
   <br>
   <br>
+
   [![CI][ci-badge]][ci-link]
   [![Link-Check][linkcheck-badge]][linkcheck-link]
   [![License][license-badge]][license-link]
   <br>
+
   [![Release][release-badge]][release-link]
   [![Commits][commits-badge]][commits-link]
   [![Website][website-badge]][website-link]
@@ -22,14 +24,16 @@ This is a static website for a professional racquet stringing business in centra
 
 Current uptime and service status for the website and related services: [status.knoxstringing.com][status-link]
 
-## Deploy
+## Deployment
 
-The site runs with **Docker Compose**.
+The site runs with Docker Compose.
 
 - NGINX serves static files from `./html`
-- Cloudflare tunnel exposes the service
+- A Cloudflare tunnel exposes the service
 
-Getting new code onto the server: On every push to `main`, the deploy-to-server job runs on a self-hosted runner on the server. It executes `scripts/pull-deploy.sh`, which pulls from GitHub.
+Code is automatically deployed whenever changes are pushed to the `main` branch. A GitHub Actions workflow runs the deploy-to-server job on a self-hosted runner located on the server. The job executes `scripts/pull-deploy.sh`, which pulls the latest changes from GitHub.
+
+During deployment the script also minifies javaScript and css as well as dynamically generates `sitemap.xml`. This keeps the productions server synchronized with `main` and ensures assets are optimized before being served by NGINX.
 
 [ci-link]:          https://github.com/bknox83/knoxstringing-website/actions/workflows/ci.yml
 [commits-link]:     https://github.com/bknox83/knoxstringing-website/commits/main
