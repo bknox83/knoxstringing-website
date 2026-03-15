@@ -1,10 +1,10 @@
 # Deploy to server only after both CI (site-checks) and CodeQL have succeeded for the same commit.
-# Triggered when either workflow completes on main; deploys only when both have passed.
+# Triggered only when CodeQL completes (CodeQL usually finishes after CI), so we run once per push.
 name: 🚀 Deploy to Server
 
 on:
   workflow_run:
-    workflows: ["✅ CI", "🔒 CodeQL"]
+    workflows: ["🔒 CodeQL"]
     types: completed
     branches: [main]
 
