@@ -28,6 +28,52 @@ Code is automatically deployed whenever changes are pushed to the `main` branch.
 
 During deployment the script minifies javascript/css files and dynamically generates `sitemap.xml`. This keeps the production server synchronized with `main` and ensures assets are optimized before being served by NGINX.
 
+## CI Workflow
+
+The [CI][ci-link] workflow runs on every pull request and push to main. It also runs on a weekly schedule.
+
+<details>
+<summary>Pull Request</summary>
+
+```mermaid
+flowchart LR
+  subgraph _[" "]
+    S(✅ site-checks)
+    C(✅ codeql)
+  end
+  _ --> D(⊘ deploy-to-server)
+  P(⊘ prod-link-check)
+```
+</details>
+
+<details>
+<summary>Push to Main</summary>
+
+```mermaid
+flowchart LR
+  subgraph _[" "]
+    S(✅ site-checks)
+    C(✅ codeql)
+  end
+  _ --> D(✅ deploy-to-server)
+  P(⊘ prod-link-check)
+```
+</details>
+
+<details>
+<summary>Schedule</summary>
+ 
+```mermaid
+flowchart LR
+  subgraph _[" "]
+    S(⊘ site-checks)
+    C(✅ codeql)
+  end
+  _ --> D(⊘ deploy-to-server)
+  P(✅ prod-link-check)
+```
+</details>
+
 [ci-link]:        https://github.com/bknox83/knoxstringing-website/actions/workflows/ci.yml
 [commits-link]:   https://github.com/bknox83/knoxstringing-website/commits/main
 [formspree-link]: https://formspree.io
