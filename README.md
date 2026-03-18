@@ -1,6 +1,6 @@
 <div align="center">
  
-  <a href="https://knoxstringing.com"><img src="site/assets/images/knox-logo.png" alt="Knox Racquet Stringing" width="200" /></a>
+  <a href="https://www.knoxstringing.com"><img src="site/assets/images/knox-logo.png" alt="Knox Racquet Stringing" width="200" /></a>
   <h3>Knox Racquet Stringing</h3>
 
   Professional tennis and racquetball stringing in Waukee, Des Moines, and the greater central Iowa area.
@@ -79,9 +79,9 @@ flowchart LR
 [formspree-link]: https://formspree.io
 [release-link]:   https://github.com/bknox83/knoxstringing-website/releases/latest
 [status-link]:    https://status.knoxstringing.com
-[website-link]:   https://knoxstringing.com
+[website-link]:   https://www.knoxstringing.com
 
-[ci-badge]:       https://img.shields.io/github/actions/workflow/status/bknox83/knoxstringing-website/ci.yml?branch=main&label=CI&style=for-the-badge
+[ci-badge]:       https://img.shields.io/github/actions/workflow/status/bknox83/knoxstringing-website/ci.yml?style=for-the-badge
 [commits-badge]:  https://img.shields.io/github/commits-since/bknox83/knoxstringing-website/latest?style=for-the-badge
 [release-badge]:  https://img.shields.io/github/v/release/bknox83/knoxstringing-website?style=for-the-badge
-[website-badge]:  https://img.shields.io/website?url=https%3A%2F%2Fknoxstringing.com&label=website&style=for-the-badge
+[website-badge]:  https://img.shields.io/website?url=https%3A%2F%2Fwww.knoxstringing.com&style=for-the-badge

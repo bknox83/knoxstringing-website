@@ -2,7 +2,7 @@
   "name": "knox-stringing",
   "private": true,
   "repository": "github:bknox83/knoxstringing-website",
-  "homepage": "https://knoxstringing.com",
+  "homepage": "https://www.knoxstringing.com",
   "engines": {
     "node": ">=18"
   },
