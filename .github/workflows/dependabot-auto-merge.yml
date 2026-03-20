@@ -81,57 +81,33 @@ jobs:
             echo "Auto-approve returned HTTP 422 (likely already reviewed). Continuing..."
           fi
 
-          echo "Enabling auto-merge (squash) for dependabot PR #${PR_NUMBER} via GraphQL..."
+          echo "Attempting to merge dependabot PR #${PR_NUMBER} (squash) now..."
 
           OWNER="${{ github.repository_owner }}"
           REPO_NAME="$(echo "${{ github.repository }}" | awk -F/ '{print $2}')"
 
-          # GraphQL request bodies must contain `$variables` literally. To avoid bash `set -u`
-          # expanding `$owner`/`$pullRequestId`, build the payload via python JSON encoding.
-          # Use double-quotes with escaped $ so the resulting string includes "$owner" etc literally.
-          : "${OWNER}"
-          : "${REPO_NAME}"
-          export OWNER REPO_NAME
-          export QUERY="query(\$owner:String!,\$name:String!,\$prNumber:Int!){repository(owner:\$owner,name:\$name){pullRequest(number:\$prNumber){id}}}"
-          export MUTATION="mutation(\$pullRequestId:ID!){enablePullRequestAutoMerge(input:{pullRequestId:\$pullRequestId, mergeMethod:SQUASH}){pullRequest{autoMergeRequest{enabledAt}}}}"
-
-          PR_LOOKUP_RESP="$(curl -sS \
-            -H "Authorization: Bearer ${GH_TOKEN}" \
-            -H "Accept: application/vnd.github+json" \
-            -X POST \
-            -d "$(python3 -c 'import json,os; print(json.dumps({"query":os.environ["QUERY"],"variables":{"owner":os.environ["OWNER"],"name":os.environ["REPO_NAME"],"prNumber":int(os.environ["PR_NUMBER"])}}))' )" \
-            https://api.github.com/graphql)"
-
-          PR_NODE_ID="$(python3 -c 'import json,sys; d=json.load(sys.stdin); print(d.get("data",{}).get("repository",{}).get("pullRequest",{}).get("id",""))' <<< "${PR_LOOKUP_RESP}")"
-
-          if [ -z "${PR_NODE_ID}" ] || [ "${PR_NODE_ID}" = "None" ]; then
-            echo "Could not resolve PR node id; cannot enable auto-merge."
-            echo "GraphQL response:"
-            echo "${PR_LOOKUP_RESP}"
-            exit 1
-          fi
-
+          # GitHub denies `enablePullRequestAutoMerge` for this integration, so instead we
+          # directly call the PR merge endpoint once CI is green and the required review
+          # state is satisfied. Retry a few times to avoid races.
           for attempt in $(seq 1 6); do
-            export PR_NODE_ID
-            RESP="$(curl -sS \
+            STATUS_CODE="$(curl -sS -o /tmp/merge-response.json -w "%{http_code}" \
+              -X PUT \
               -H "Authorization: Bearer ${GH_TOKEN}" \
               -H "Accept: application/vnd.github+json" \
-              -X POST \
-              -d "$(python3 -c 'import json,os; print(json.dumps({"query":os.environ["MUTATION"],"variables":{"pullRequestId":os.environ["PR_NODE_ID"]}}))' )" \
-              https://api.github.com/graphql)"
+              "https://api.github.com/repos/${OWNER}/${REPO_NAME}/pulls/${PR_NUMBER}/merge" \
+              -d "{\"merge_method\":\"squash\",\"sha\":\"${HEAD_SHA}\"}")"
 
-            # GraphQL errors show up under `errors`, while success returns under `data`.
-            HAS_ERRORS="$(echo "${RESP}" | python3 -c 'import json,sys; d=json.load(sys.stdin); print(1 if (d.get("errors")) else 0)')"
-
-            if [ "${HAS_ERRORS}" = "0" ]; then
-              echo "Auto-merge enabled successfully."
+            if [ "${STATUS_CODE}" -ge 200 ] && [ "${STATUS_CODE}" -lt 300 ]; then
+              echo "Merge succeeded."
+              cat /tmp/merge-response.json
               exit 0
             fi
 
-            echo "Auto-merge attempt ${attempt}/6 failed. Waiting 10s..."
-            echo "${RESP}" | head -n 20
+            echo "Merge attempt ${attempt}/6 failed (HTTP ${STATUS_CODE}). Waiting 10s..."
+            cat /tmp/merge-response.json || true
             sleep 10
           done
 
-          echo "Auto-merge mutation failed after retries."
+          echo "Merge failed after retries."
+          cat /tmp/merge-response.json || true
           exit 1
