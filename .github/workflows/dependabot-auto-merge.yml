@@ -57,19 +57,46 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
           set -euo pipefail
 
-          echo "Enabling auto-merge (squash) for dependabot PR #${PR_NUMBER}..."
-          STATUS_CODE="$(curl -sS -o /tmp/auto-merge-response.json -w "%{http_code}" -X PUT \
+          echo "Submitting APPROVED review for dependabot PR #${PR_NUMBER}..."
+          REVIEW_CODE="$(curl -sS -o /tmp/auto-approve-response.json -w "%{http_code}" \
+            -X POST \
             -H "Authorization: Bearer ${GH_TOKEN}" \
             -H "Accept: application/vnd.github+json" \
-            "https://api.github.com/repos/${{ github.repository }}/pulls/${PR_NUMBER}/auto-merge" \
-            -d '{"merge_method":"squash"}')"
+            "https://api.github.com/repos/${{ github.repository }}/pulls/${PR_NUMBER}/reviews" \
+            -d "{\"event\":\"APPROVE\",\"commit_id\":\"${HEAD_SHA}\",\"body\":\"Auto-approve Dependabot after CI success\"}")"
 
-          if [ "$STATUS_CODE" -lt 200 ] || [ "$STATUS_CODE" -ge 300 ]; then
-            echo "Auto-merge API call failed (HTTP ${STATUS_CODE})."
-            echo "Response:"
-            cat /tmp/auto-merge-response.json
-            exit 1
+          # If a review already exists, GitHub can return 422; treat that as non-fatal.
+          if [ "$REVIEW_CODE" -lt 200 ] || [ "$REVIEW_CODE" -ge 300 ]; then
+            if [ "$REVIEW_CODE" != "422" ]; then
+              echo "Auto-approve failed (HTTP ${REVIEW_CODE})."
+              echo "Response:"
+              cat /tmp/auto-approve-response.json
+              exit 1
+            fi
+            echo "Auto-approve returned HTTP 422 (likely already reviewed). Continuing..."
           fi
+
+          echo "Enabling auto-merge (squash) for dependabot PR #${PR_NUMBER}..."
+          for attempt in $(seq 1 6); do
+            STATUS_CODE="$(curl -sS -o /tmp/auto-merge-response.json -w "%{http_code}" -X PUT \
+              -H "Authorization: Bearer ${GH_TOKEN}" \
+              -H "Accept: application/vnd.github+json" \
+              "https://api.github.com/repos/${{ github.repository }}/pulls/${PR_NUMBER}/auto-merge" \
+              -d '{"merge_method":"squash"}')"
+
+            if [ "$STATUS_CODE" -ge 200 ] && [ "$STATUS_CODE" -lt 300 ]; then
+              exit 0
+            fi
+
+            echo "Auto-merge attempt ${attempt}/6 failed (HTTP ${STATUS_CODE}). Waiting 10s..."
+            sleep 10
+          done
+
+          echo "Auto-merge API call failed after retries (HTTP ${STATUS_CODE})."
+          echo "Response:"
+          cat /tmp/auto-merge-response.json
+          exit 1
