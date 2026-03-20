@@ -18,7 +18,8 @@ permissions:
 jobs:
   enable-auto-merge:
     runs-on: ubuntu-latest
-    if: github.actor == 'dependabot[bot]'
+    # Use the PR author, not the event actor (synchronize events may be triggered by a rebase/force-push).
+    if: github.event.pull_request.user.login == 'dependabot[bot]'
     steps:
       - name: Wait for required CI checks
         env:
