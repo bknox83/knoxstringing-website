@@ -303,6 +303,10 @@ a:focus-visible, button:focus-visible {
   color: var(--color-text);
 }
 
+.section-title--contact-green {
+  color: #0f3d28;
+}
+
 /* --- Services --- */
 .services { background: var(--color-surface); }
 .services-grid {
