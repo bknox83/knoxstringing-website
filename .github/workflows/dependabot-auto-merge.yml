@@ -13,7 +13,8 @@ on:
 
 permissions:
   pull-requests: write
-  contents: read
+  # Merging creates commits on the default branch, so it needs write access.
+  contents: write
 
 jobs:
   enable-auto-merge:
