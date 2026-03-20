@@ -81,23 +81,43 @@ jobs:
             echo "Auto-approve returned HTTP 422 (likely already reviewed). Continuing..."
           fi
 
-          echo "Enabling auto-merge (squash) for dependabot PR #${PR_NUMBER}..."
+          echo "Enabling auto-merge (squash) for dependabot PR #${PR_NUMBER} via GraphQL..."
+
+          OWNER="${{ github.repository_owner }}"
+          REPO_NAME="$(echo "${{ github.repository }}" | awk -F/ '{print $2}')"
+
+          PR_NODE_ID="$(curl -sS \
+            -H "Authorization: Bearer ${GH_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            -X POST \
+            -d "{\"query\":\"query($owner:String!,$name:String!,$prNumber:Int!){repository(owner:$owner,name:$name){pullRequest(number:$prNumber){id}}}\",\"variables\":{\"owner\":\"${OWNER}\",\"name\":\"${REPO_NAME}\",\"prNumber\":${PR_NUMBER}}}" \
+            https://api.github.com/graphql | python3 -c 'import json,sys; d=json.load(sys.stdin); print(d["data"]["repository"]["pullRequest"]["id"])')"
+
+          if [ -z "${PR_NODE_ID}" ] || [ "${PR_NODE_ID}" = "None" ]; then
+            echo "Could not resolve PR node id; cannot enable auto-merge."
+            exit 1
+          fi
+
           for attempt in $(seq 1 6); do
-            STATUS_CODE="$(curl -sS -o /tmp/auto-merge-response.json -w "%{http_code}" -X PUT \
+            RESP="$(curl -sS \
               -H "Authorization: Bearer ${GH_TOKEN}" \
               -H "Accept: application/vnd.github+json" \
-              "https://api.github.com/repos/${{ github.repository }}/pulls/${PR_NUMBER}/auto-merge" \
-              -d '{"merge_method":"squash"}')"
+              -X POST \
+              -d "{\"query\":\"mutation($pullRequestId:ID!){enablePullRequestAutoMerge(input:{pullRequestId:$pullRequestId, mergeMethod:SQUASH}){pullRequest{autoMergeRequest{enabledAt}}}}\",\"variables\":{\"pullRequestId\":\"${PR_NODE_ID}\"}}" \
+              https://api.github.com/graphql)"
 
-            if [ "$STATUS_CODE" -ge 200 ] && [ "$STATUS_CODE" -lt 300 ]; then
+            # GraphQL errors show up under `errors`, while success returns under `data`.
+            HAS_ERRORS="$(echo "${RESP}" | python3 -c 'import json,sys; d=json.load(sys.stdin); print(1 if "errors" in d and d["errors"] else 0)')"
+
+            if [ "${HAS_ERRORS}" = "0" ]; then
+              echo "Auto-merge enabled successfully."
               exit 0
             fi
 
-            echo "Auto-merge attempt ${attempt}/6 failed (HTTP ${STATUS_CODE}). Waiting 10s..."
+            echo "Auto-merge attempt ${attempt}/6 failed. Waiting 10s..."
+            echo "${RESP}" | head -n 20
             sleep 10
           done
 
-          echo "Auto-merge API call failed after retries (HTTP ${STATUS_CODE})."
-          echo "Response:"
-          cat /tmp/auto-merge-response.json
+          echo "Auto-merge mutation failed after retries."
           exit 1
