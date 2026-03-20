@@ -1,16 +1,15 @@
-# Enable auto-merge on Dependabot PRs after CI succeeds.
+# Enable auto-merge on Dependabot PRs only after CI is successful.
 # Requires: Repo Settings → General → Pull Requests → "Allow auto-merge" enabled.
 #
-# Why this exists:
-# - `pull_request` triggers can race with required checks/mergeability.
-# - This workflow waits for the main CI workflow (`✅ CI`) to finish successfully.
+# We keep the `pull_request` trigger (because GitHub `workflow_run` wasn't firing
+# for the PR case), but we *wait* for required checks to turn `success`
+# before calling the auto-merge API.
 
 name: Dependabot Auto-Merge
 
 on:
-  workflow_run:
-    workflows: ["✅ CI"]
-    types: [completed]
+  pull_request:
+    types: [opened, synchronize]
 
 permissions:
   pull-requests: write
@@ -19,46 +18,85 @@ permissions:
 jobs:
   enable-auto-merge:
     runs-on: ubuntu-latest
-    if: github.event.workflow_run.conclusion == 'success'
+    if: github.actor == 'dependabot[bot]'
     steps:
-      - name: Enable auto-merge for Dependabot PR(s)
+      - name: Wait for required CI checks
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
           set -euo pipefail
 
-          # workflow_run can be associated with one or more PRs.
-          PR_NUMBERS="$(python3 -c "import json; e=json.load(open('$GITHUB_EVENT_PATH')); prs=e.get('pull_requests',[]); print(' '.join(str(pr['number']) for pr in prs))")"
-          if [ -z "$PR_NUMBERS" ]; then
-            echo "No PRs associated with this CI run; nothing to do."
-            exit 0
-          fi
+          echo "Waiting for CI checks to succeed on PR #${PR_NUMBER} (${HEAD_SHA})..."
 
-          for PR_NUMBER in $PR_NUMBERS; do
-            PR_JSON="$(curl -sS -H "Authorization: Bearer $GH_TOKEN" \
+          # Poll up to ~10 minutes (40 * 15s).
+          for i in $(seq 1 40); do
+            CHECKS_JSON="$(curl -sS \
+              -H "Authorization: Bearer ${GH_TOKEN}" \
               -H "Accept: application/vnd.github+json" \
-              "https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER")"
+              "https://api.github.com/repos/${{ github.repository }}/commits/${HEAD_SHA}/check-runs?per_page=100")"
 
-            PR_LOGIN="$(python3 -c "import json,sys; j=json.loads(sys.stdin.read()); print(j['user']['login'])" <<< "$PR_JSON")"
-            if [ "$PR_LOGIN" != "dependabot[bot]" ]; then
-              echo "Skipping PR #$PR_NUMBER: author is '$PR_LOGIN' (not dependabot[bot])."
-              continue
+            state="$(python3 - <<'PY' <<< "${CHECKS_JSON}"
+import json, sys
+data=json.loads(sys.stdin.read())
+runs=data.get("check_runs", [])
+def concl(name):
+    # Case-insensitive lookup by check-run name; pick the most recently completed one.
+    matches = []
+    for r in runs:
+        if (r.get("name") or "").lower() == name.lower():
+            matches.append(r)
+    if not matches:
+        return None
+    def sort_key(r):
+        return r.get("completed_at") or r.get("started_at") or ""
+    matches.sort(key=sort_key, reverse=True)
+    return matches[0].get("conclusion")
+
+site=concl("site-checks")
+codeql=concl("CodeQL")
+
+if site == "success" and codeql == "success":
+    print("SUCCESS")
+elif site == "failure" or codeql == "failure":
+    print("FAIL")
+else:
+    print("WAIT")
+PY
+)"
+
+            if [ "$state" = "SUCCESS" ]; then
+              echo "CI checks are successful."
+              break
             fi
 
-            echo "Enabling auto-merge (squash) for dependabot PR #$PR_NUMBER..."
-
-            DATA="$(python3 -c "import json,os; print(json.dumps({'merge_method':'squash','sha':os.environ['HEAD_SHA']}))")"
-            STATUS_CODE="$(curl -sS -o /tmp/auto-merge-response.json -w "%{http_code}" -X PUT \
-              -H "Authorization: Bearer $GH_TOKEN" \
-              -H "Accept: application/vnd.github+json" \
-              "https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER/auto-merge" \
-              -d "$DATA")"
-
-            if [ "$STATUS_CODE" -lt 200 ] || [ "$STATUS_CODE" -ge 300 ]; then
-              echo "Auto-merge API call failed for PR #$PR_NUMBER (HTTP $STATUS_CODE)."
-              echo "Response:"
-              cat /tmp/auto-merge-response.json
+            if [ "$state" = "FAIL" ]; then
+              echo "CI checks failed; not enabling auto-merge."
               exit 1
             fi
+
+            echo "Not ready yet (attempt ${i}/40). Sleeping 15s..."
+            sleep 15
           done
+
+      - name: Enable auto-merge (squash)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+
+          echo "Enabling auto-merge (squash) for dependabot PR #${PR_NUMBER}..."
+          STATUS_CODE="$(curl -sS -o /tmp/auto-merge-response.json -w "%{http_code}" -X PUT \
+            -H "Authorization: Bearer ${GH_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${{ github.repository }}/pulls/${PR_NUMBER}/auto-merge" \
+            -d '{"merge_method":"squash"}')"
+
+          if [ "$STATUS_CODE" -lt 200 ] || [ "$STATUS_CODE" -ge 300 ]; then
+            echo "Auto-merge API call failed (HTTP ${STATUS_CODE})."
+            echo "Response:"
+            cat /tmp/auto-merge-response.json
+            exit 1
+          fi
