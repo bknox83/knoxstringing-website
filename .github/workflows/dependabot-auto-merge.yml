@@ -88,8 +88,11 @@ jobs:
 
           # GraphQL request bodies must contain `$variables` literally. To avoid bash `set -u`
           # expanding `$owner`/`$pullRequestId`, build the payload via python JSON encoding.
-          export QUERY='query($owner:String!,$name:String!,$prNumber:Int!){repository(owner:$owner,name:$name){pullRequest(number:$prNumber){id}}}'
-          export MUTATION='mutation($pullRequestId:ID!){enablePullRequestAutoMerge(input:{pullRequestId:$pullRequestId, mergeMethod:SQUASH}){pullRequest{autoMergeRequest{enabledAt}}}}'
+          # Use double-quotes with escaped $ so the resulting string includes "$owner" etc literally.
+          : "${OWNER}"
+          : "${REPO_NAME}"
+          export QUERY="query(\$owner:String!,\$name:String!,\$prNumber:Int!){repository(owner:\$owner,name:\$name){pullRequest(number:\$prNumber){id}}}"
+          export MUTATION="mutation(\$pullRequestId:ID!){enablePullRequestAutoMerge(input:{pullRequestId:\$pullRequestId, mergeMethod:SQUASH}){pullRequest{autoMergeRequest{enabledAt}}}}"
 
           PR_NODE_ID="$(curl -sS \
             -H "Authorization: Bearer ${GH_TOKEN}" \
