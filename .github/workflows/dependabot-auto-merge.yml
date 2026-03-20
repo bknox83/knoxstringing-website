@@ -86,11 +86,16 @@ jobs:
           OWNER="${{ github.repository_owner }}"
           REPO_NAME="$(echo "${{ github.repository }}" | awk -F/ '{print $2}')"
 
+          # GraphQL request bodies must contain `$variables` literally. To avoid bash `set -u`
+          # expanding `$owner`/`$pullRequestId`, build the payload via python JSON encoding.
+          export QUERY='query($owner:String!,$name:String!,$prNumber:Int!){repository(owner:$owner,name:$name){pullRequest(number:$prNumber){id}}}'
+          export MUTATION='mutation($pullRequestId:ID!){enablePullRequestAutoMerge(input:{pullRequestId:$pullRequestId, mergeMethod:SQUASH}){pullRequest{autoMergeRequest{enabledAt}}}}'
+
           PR_NODE_ID="$(curl -sS \
             -H "Authorization: Bearer ${GH_TOKEN}" \
             -H "Accept: application/vnd.github+json" \
             -X POST \
-            -d "{\"query\":\"query(\\$owner:String!,\\$name:String!,\\$prNumber:Int!){repository(owner:\\$owner,name:\\$name){pullRequest(number:\\$prNumber){id}}}\",\"variables\":{\"owner\":\"${OWNER}\",\"name\":\"${REPO_NAME}\",\"prNumber\":${PR_NUMBER}}}" \
+            -d "$(python3 -c 'import json,os; print(json.dumps({"query":os.environ["QUERY"],"variables":{"owner":os.environ["OWNER"],"name":os.environ["REPO_NAME"],"prNumber":int(os.environ["PR_NUMBER"])}}))' )" \
             https://api.github.com/graphql | python3 -c 'import json,sys; d=json.load(sys.stdin); print(d["data"]["repository"]["pullRequest"]["id"])')"
 
           if [ -z "${PR_NODE_ID}" ] || [ "${PR_NODE_ID}" = "None" ]; then
@@ -99,11 +104,12 @@ jobs:
           fi
 
           for attempt in $(seq 1 6); do
+            export PR_NODE_ID
             RESP="$(curl -sS \
               -H "Authorization: Bearer ${GH_TOKEN}" \
               -H "Accept: application/vnd.github+json" \
               -X POST \
-              -d "{\"query\":\"mutation(\\$pullRequestId:ID!){enablePullRequestAutoMerge(input:{pullRequestId:\\$pullRequestId, mergeMethod:SQUASH}){pullRequest{autoMergeRequest{enabledAt}}}}\",\"variables\":{\"pullRequestId\":\"${PR_NODE_ID}\"}}" \
+              -d "$(python3 -c 'import json,os; print(json.dumps({"query":os.environ["MUTATION"],"variables":{"pullRequestId":os.environ["PR_NODE_ID"]}}))' )" \
               https://api.github.com/graphql)"
 
             # GraphQL errors show up under `errors`, while success returns under `data`.
