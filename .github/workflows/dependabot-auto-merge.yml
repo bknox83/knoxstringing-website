@@ -90,7 +90,7 @@ jobs:
             -H "Authorization: Bearer ${GH_TOKEN}" \
             -H "Accept: application/vnd.github+json" \
             -X POST \
-            -d "{\"query\":\"query($owner:String!,$name:String!,$prNumber:Int!){repository(owner:$owner,name:$name){pullRequest(number:$prNumber){id}}}\",\"variables\":{\"owner\":\"${OWNER}\",\"name\":\"${REPO_NAME}\",\"prNumber\":${PR_NUMBER}}}" \
+            -d "{\"query\":\"query(\\$owner:String!,\\$name:String!,\\$prNumber:Int!){repository(owner:\\$owner,name:\\$name){pullRequest(number:\\$prNumber){id}}}\",\"variables\":{\"owner\":\"${OWNER}\",\"name\":\"${REPO_NAME}\",\"prNumber\":${PR_NUMBER}}}" \
             https://api.github.com/graphql | python3 -c 'import json,sys; d=json.load(sys.stdin); print(d["data"]["repository"]["pullRequest"]["id"])')"
 
           if [ -z "${PR_NODE_ID}" ] || [ "${PR_NODE_ID}" = "None" ]; then
@@ -103,7 +103,7 @@ jobs:
               -H "Authorization: Bearer ${GH_TOKEN}" \
               -H "Accept: application/vnd.github+json" \
               -X POST \
-              -d "{\"query\":\"mutation($pullRequestId:ID!){enablePullRequestAutoMerge(input:{pullRequestId:$pullRequestId, mergeMethod:SQUASH}){pullRequest{autoMergeRequest{enabledAt}}}}\",\"variables\":{\"pullRequestId\":\"${PR_NODE_ID}\"}}" \
+              -d "{\"query\":\"mutation(\\$pullRequestId:ID!){enablePullRequestAutoMerge(input:{pullRequestId:\\$pullRequestId, mergeMethod:SQUASH}){pullRequest{autoMergeRequest{enabledAt}}}}\",\"variables\":{\"pullRequestId\":\"${PR_NODE_ID}\"}}" \
               https://api.github.com/graphql)"
 
             # GraphQL errors show up under `errors`, while success returns under `data`.
