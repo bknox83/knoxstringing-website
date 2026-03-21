@@ -304,7 +304,7 @@ a:focus-visible, button:focus-visible {
 }
 
 .section-title--contact-green {
-  color: #0f3d28;
+  color: var(--color-accent);
 }
 
 /* --- Services --- */
@@ -681,9 +681,9 @@ a:focus-visible, button:focus-visible {
 .contact-link {
   font-weight: 600;
   font-size: 1.1rem;
-  color: #0f3d28;
+  color: var(--color-accent);
 }
-.contact-link:hover { text-decoration: none; color: #0a291c; }
+.contact-link:hover { text-decoration: none; color: #164a32; }
 
 /* --- Footer --- */
 .site-footer {
