@@ -74,6 +74,7 @@ flowchart LR
 ```
 </details>
 
+[ci-link]:        https://github.com/bknox83/knoxstringing-website/actions/workflows/ci.yml
 [commits-link]:   https://github.com/bknox83/knoxstringing-website/commits/main
 [formspree-link]: https://formspree.io
 [release-link]:   https://github.com/bknox83/knoxstringing-website/releases/latest
