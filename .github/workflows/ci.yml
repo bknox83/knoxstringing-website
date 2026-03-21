@@ -33,6 +33,9 @@ jobs:
         run: |
           docker run --rm -v "$PWD:/data" ghcr.io/validator/validator:latest vnu --skip-non-html /data/site/index.html
 
+      - name: Verify referenced images exist
+        run: node scripts/check-site-image-refs.js
+
       - name: JSON-LD LocalBusiness schema validation
         run: node scripts/validate-jsonld.js
 

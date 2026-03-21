@@ -4,7 +4,7 @@
   "repository": "github:bknox83/knoxstringing-website",
   "homepage": "https://www.knoxstringing.com",
   "engines": {
-    "node": ">=18"
+    "node": ">=22"
   },
   "scripts": {
     "build": "npm run minify:css && npm run minify:js",

@@ -30,7 +30,7 @@ During deployment the script minifies javascript/css files and dynamically gener
 
 ## CI Workflow
 
-The [CI][ci-link] workflow runs on every pull request and push to main. It also runs on a weekly schedule.
+The `CI` workflow runs on every pull request and push to main. It also runs on a weekly schedule.
 
 <details>
 <summary>Pull Request</summary>
@@ -74,7 +74,6 @@ flowchart LR
 ```
 </details>
 
-[ci-link]:        https://github.com/bknox83/knoxstringing-website/actions/workflows/ci.yml
 [commits-link]:   https://github.com/bknox83/knoxstringing-website/commits/main
 [formspree-link]: https://formspree.io
 [release-link]:   https://github.com/bknox83/knoxstringing-website/releases/latest
