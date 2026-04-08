@@ -11,14 +11,21 @@
 # It must live under Settings → Secrets and variables → Actions (repository secret).
 # Secrets under "Dependabot" are not available to this workflow.
 #
-# We keep the `pull_request` trigger (because GitHub `workflow_run` wasn't firing
-# for the PR case), but we *wait* for required checks to turn `success`
-# before calling the auto-merge API.
+# We use `pull_request_target` (not `pull_request`) so repository secrets are
+# available for Dependabot PRs on *public* repositories. GitHub does not inject
+# Actions secrets into `pull_request` workflows when the actor is Dependabot
+# on a public repo — the job would fall back to GITHUB_TOKEN and merge returns
+# HTTP 403 "Resource not accessible by integration".
+# This workflow only calls the REST API (no checkout of the PR head); do not
+# add untrusted code execution here.
+#
+# We *wait* for required checks to turn `success` before calling the merge API.
 
 name: Dependabot Auto-Merge
 
 on:
-  pull_request:
+  pull_request_target:
+    branches: [main]
     types: [opened, synchronize]
 
 permissions:
@@ -199,7 +206,7 @@ jobs:
             echo "Merge attempt ${attempt}/6 failed (HTTP ${STATUS_CODE}). Waiting 10s..."
             cat /tmp/merge-response.json || true
             if [ "${STATUS_CODE}" = "405" ] || [ "${STATUS_CODE}" = "403" ]; then
-              echo "::error::Merge blocked by repository rules. If review is satisfied, the rule may require a specific team or bypass list — check Settings → Rules."
+              echo "::error::Merge blocked (HTTP ${STATUS_CODE}). 403 \"Resource not accessible by integration\" often means GITHUB_TOKEN was used instead of DEPENDABOT_AUTOMERGE_TOKEN — use pull_request_target for public repos + Dependabot, or ensure the PAT has Contents + Pull requests write."
               exit 1
             fi
             sleep 10
