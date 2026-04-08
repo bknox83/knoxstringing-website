@@ -1,5 +1,15 @@
 # Enable auto-merge on Dependabot PRs only after CI is successful.
-# Requires: Repo Settings → General → Pull Requests → "Allow auto-merge" enabled.
+#
+# "Allow auto-merge" in repo settings only applies to GitHub's UI auto-merge;
+# this workflow merges via the API instead. If branch protection requires
+# approving reviews that only a human (or PAT) can satisfy, add a repo secret
+# DEPENDABOT_AUTOMERGE_TOKEN (classic PAT with repo scope, or fine-grained with
+# Contents + Pull requests). GITHUB_TOKEN alone often cannot merge when reviews
+# are required.
+#
+# The secret name must match exactly: DEPENDABOT_AUTOMERGE_TOKEN
+# It must live under Settings → Secrets and variables → Actions (repository secret).
+# Secrets under "Dependabot" are not available to this workflow.
 #
 # We keep the `pull_request` trigger (because GitHub `workflow_run` wasn't firing
 # for the PR case), but we *wait* for required checks to turn `success`
@@ -22,6 +32,28 @@ jobs:
     # Use the PR author, not the event actor (synchronize events may be triggered by a rebase/force-push).
     if: github.event.pull_request.user.login == 'dependabot[bot]'
     steps:
+      - name: Confirm PAT secret and API identity
+        env:
+          PAT: ${{ secrets.DEPENDABOT_AUTOMERGE_TOKEN }}
+          ACTIONS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -z "${PAT}" ]; then
+            echo "::warning::Repository secret DEPENDABOT_AUTOMERGE_TOKEN is missing or empty."
+            echo "This workflow will use GITHUB_TOKEN only; that cannot satisfy rules requiring a review from users with write access."
+            echo "Add an Actions repository secret named exactly DEPENDABOT_AUTOMERGE_TOKEN (not Dependabot secrets; names are case-sensitive)."
+            GH_TOKEN="${ACTIONS_TOKEN}"
+          else
+            echo "DEPENDABOT_AUTOMERGE_TOKEN is set; using it for GitHub API calls."
+            GH_TOKEN="${PAT}"
+          fi
+          LOGIN="$(curl -sS -H "Authorization: Bearer ${GH_TOKEN}" -H "Accept: application/vnd.github+json" \
+            https://api.github.com/user | python3 -c 'import json,sys; print(json.load(sys.stdin).get("login") or "?")')"
+          echo "GitHub API user for approve/merge: ${LOGIN}"
+          if [ -z "${PAT}" ]; then
+            echo "::warning::Without DEPENDABOT_AUTOMERGE_TOKEN, merge may fail with 405 if rules require a review from users with write access."
+          fi
+
       - name: Wait for required CI checks
         env:
           # Prefer a PAT for a maintainer with write permissions, so approvals/merges
@@ -34,6 +66,7 @@ jobs:
 
           echo "Waiting for CI checks to succeed on PR #${PR_NUMBER} (${HEAD_SHA})..."
 
+          got_success=""
           # Poll up to ~10 minutes (40 * 15s).
           for i in $(seq 1 40); do
             CHECKS_JSON="$(curl -sS \
@@ -45,17 +78,29 @@ jobs:
 
             if [ "$state" = "SUCCESS" ]; then
               echo "CI checks are successful."
+              got_success=1
               break
             fi
 
             if [ "$state" = "FAIL" ]; then
               echo "CI checks failed; not enabling auto-merge."
+              python3 -c 'import json,sys; d=json.loads(sys.stdin.read()); runs=d.get("check_runs",[]); print("Check runs on this commit:"); [print(" -", (r.get("name") or "?")+":", r.get("status"), r.get("conclusion")) for r in runs]' <<< "${CHECKS_JSON}"
               exit 1
             fi
 
             echo "Not ready yet (attempt ${i}/40). Sleeping 15s..."
             sleep 15
           done
+
+          if [ -z "${got_success}" ]; then
+            echo "::error::Timed out waiting for site-checks + codeql to succeed (10m). Check names may have changed, or CI is too slow."
+            curl -sS \
+              -H "Authorization: Bearer ${GH_TOKEN}" \
+              -H "Accept: application/vnd.github+json" \
+              "https://api.github.com/repos/${{ github.repository }}/commits/${HEAD_SHA}/check-runs?per_page=100" \
+              | python3 -c 'import json,sys; d=json.loads(sys.stdin.read()); runs=d.get("check_runs",[]); print("Check runs on this commit:"); [print(" -", (r.get("name") or "?")+":", r.get("status"), r.get("conclusion")) for r in runs]'
+            exit 1
+          fi
 
       - name: Enable auto-merge (squash)
         env:
@@ -65,33 +110,78 @@ jobs:
         run: |
           set -euo pipefail
 
-          echo "Submitting APPROVED review for dependabot PR #${PR_NUMBER}..."
+          OWNER="${{ github.repository_owner }}"
+          REPO_NAME="$(echo "${{ github.repository }}" | awk -F/ '{print $2}')"
+
+          LOGIN="$(curl -sS -H "Authorization: Bearer ${GH_TOKEN}" -H "Accept: application/vnd.github+json" \
+            https://api.github.com/user | python3 -c 'import json,sys; print(json.load(sys.stdin).get("login") or "")')"
+          if [ -z "${LOGIN}" ]; then
+            echo "::error::Could not resolve GitHub user for GH_TOKEN."
+            exit 1
+          fi
+          echo "Approving as GitHub user: ${LOGIN}"
+
+          echo "Submitting APPROVED review for dependabot PR #${PR_NUMBER} (commit ${HEAD_SHA})..."
           REVIEW_CODE="$(curl -sS -o /tmp/auto-approve-response.json -w "%{http_code}" \
             -X POST \
             -H "Authorization: Bearer ${GH_TOKEN}" \
             -H "Accept: application/vnd.github+json" \
-            "https://api.github.com/repos/${{ github.repository }}/pulls/${PR_NUMBER}/reviews" \
+            "https://api.github.com/repos/${OWNER}/${REPO_NAME}/pulls/${PR_NUMBER}/reviews" \
             -d "{\"event\":\"APPROVE\",\"commit_id\":\"${HEAD_SHA}\",\"body\":\"Auto-approve Dependabot after CI success\"}")"
 
-          # If a review already exists, GitHub can return 422; treat that as non-fatal.
           if [ "$REVIEW_CODE" -lt 200 ] || [ "$REVIEW_CODE" -ge 300 ]; then
+            echo "Create review HTTP ${REVIEW_CODE}; response body:"
+            cat /tmp/auto-approve-response.json
+            echo ""
             if [ "$REVIEW_CODE" != "422" ]; then
-              echo "Auto-approve failed (HTTP ${REVIEW_CODE})."
-              echo "Response:"
-              cat /tmp/auto-approve-response.json
+              echo "::error::Approve request failed."
               exit 1
             fi
-            echo "Auto-approve returned HTTP 422 (likely already reviewed). Continuing..."
+            echo "HTTP 422 from create review — checking whether an APPROVED review from ${LOGIN} already exists on this commit..."
           fi
+
+          echo "Listing pull request reviews (latest per reviewer)..."
+          REVIEWS_JSON="$(curl -sS -H "Authorization: Bearer ${GH_TOKEN}" -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${OWNER}/${REPO_NAME}/pulls/${PR_NUMBER}/reviews?per_page=100")"
+          export LOGIN
+          export REVIEWS_JSON
+
+          python3 << 'PY'
+          import json, os, sys
+          reviews = json.loads(os.environ["REVIEWS_JSON"])
+          login = os.environ["LOGIN"]
+          head = os.environ["HEAD_SHA"]
+          by_id = {}
+          for r in reviews:
+              u = (r.get("user") or {}).get("login")
+              if not u:
+                  continue
+              rid = r.get("id") or 0
+              if rid > by_id.get(u, (0, None))[0]:
+                  by_id[u] = (rid, r)
+          latest = {u: t[1] for u, t in by_id.items()}
+          mine = latest.get(login)
+          print("Latest review from", login + ":", json.dumps(mine, indent=2) if mine else "(none)")
+          if not mine or mine.get("state") != "APPROVED":
+              print(
+                  "::error::No APPROVED review from",
+                  login,
+                  "- merge rules will block. Fix PAT permissions (Pull requests: write), or approve manually on the PR.",
+              )
+              sys.exit(1)
+          if mine.get("commit_id") != head:
+              print(
+                  "::error::Your latest approval is on",
+                  mine.get("commit_id"),
+                  "but PR head is",
+                  head,
+                  "- re-run after CI on the current head.",
+              )
+              sys.exit(1)
+          PY
 
           echo "Attempting to merge dependabot PR #${PR_NUMBER} (squash) now..."
 
-          OWNER="${{ github.repository_owner }}"
-          REPO_NAME="$(echo "${{ github.repository }}" | awk -F/ '{print $2}')"
-
-          # GitHub denies `enablePullRequestAutoMerge` for this integration, so instead we
-          # directly call the PR merge endpoint once CI is green and the required review
-          # state is satisfied. Retry a few times to avoid races.
           for attempt in $(seq 1 6); do
             STATUS_CODE="$(curl -sS -o /tmp/merge-response.json -w "%{http_code}" \
               -X PUT \
@@ -108,9 +198,14 @@ jobs:
 
             echo "Merge attempt ${attempt}/6 failed (HTTP ${STATUS_CODE}). Waiting 10s..."
             cat /tmp/merge-response.json || true
+            if [ "${STATUS_CODE}" = "405" ] || [ "${STATUS_CODE}" = "403" ]; then
+              echo "::error::Merge blocked by repository rules. If review is satisfied, the rule may require a specific team or bypass list — check Settings → Rules."
+              exit 1
+            fi
             sleep 10
           done
 
           echo "Merge failed after retries."
           cat /tmp/merge-response.json || true
           exit 1
+
